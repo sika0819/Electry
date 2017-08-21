@@ -1,0 +1,280 @@
+fileFormatVersion: 2
+guid: b96f973cc2bae894e9fcfc11dabcddf5
+timeCreated: 1496295736
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Box001
+    100002: Box002
+    100004: Box010
+    100006: Box011
+    100008: Box012
+    100010: Box013
+    100012: Box014
+    100014: Box015
+    100016: //RootNode
+    100018: Box003
+    100020: Box004
+    100022: Box005
+    100024: Box006
+    100026: Box007
+    100028: Box008
+    100030: Box009
+    100032: ChamferBox001
+    100034: ChamferBox002
+    100036: famen
+    100038: switchTuo
+    400000: Box001
+    400002: Box002
+    400004: Box010
+    400006: Box011
+    400008: Box012
+    400010: Box013
+    400012: Box014
+    400014: Box015
+    400016: //RootNode
+    400018: Box003
+    400020: Box004
+    400022: Box005
+    400024: Box006
+    400026: Box007
+    400028: Box008
+    400030: Box009
+    400032: ChamferBox001
+    400034: ChamferBox002
+    400036: famen
+    400038: switchTuo
+    2300000: Box001
+    2300002: Box002
+    2300004: Box010
+    2300006: Box011
+    2300008: Box012
+    2300010: Box013
+    2300012: Box014
+    2300014: Box015
+    2300016: //RootNode
+    2300018: Box003
+    2300020: Box004
+    2300022: Box005
+    2300024: Box006
+    2300026: Box007
+    2300028: Box008
+    2300030: Box009
+    2300032: ChamferBox001
+    2300034: ChamferBox002
+    2300036: famen
+    2300038: switchTuo
+    3300000: Box001
+    3300002: Box002
+    3300004: Box010
+    3300006: Box011
+    3300008: Box012
+    3300010: Box013
+    3300012: Box014
+    3300014: Box015
+    3300016: //RootNode
+    3300018: Box003
+    3300020: Box004
+    3300022: Box005
+    3300024: Box006
+    3300026: Box007
+    3300028: Box008
+    3300030: Box009
+    3300032: ChamferBox001
+    3300034: ChamferBox002
+    3300036: famen
+    3300038: switchTuo
+    4300000: Box001
+    4300002: Box002
+    4300004: Box010
+    4300006: Box011
+    4300008: Box012
+    4300010: Box013
+    4300012: Box014
+    4300014: Box015
+    4300016: Box003
+    4300018: Box004
+    4300020: Box005
+    4300022: Box006
+    4300024: ChamferBox001
+    4300026: ChamferBox002
+    4300028: Box007
+    4300030: Box008
+    4300032: Box009
+    4300034: switchTuo
+    4300036: famen
+    7400000: TakeOn
+    7400002: idle
+    7400004: TakeOff
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: <Root Transform>
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: TakeOn
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: famen
+        weight: 1
+      - path: switchTuo
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: idle
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: famen
+        weight: 1
+      - path: switchTuo
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: TakeOff
+      takeName: Take 001
+      firstFrame: 30
+      lastFrame: 60
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: famen
+        weight: 1
+      - path: switchTuo
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 10
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
