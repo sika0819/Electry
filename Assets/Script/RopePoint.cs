@@ -8,6 +8,7 @@ public class RopePoint : MonoBehaviour {
     Camera expCamera;
     Element eleLine;
     Element linkedEle;
+    Rope rope;
     public GameObject linkObj {
         get {
             return _linkObj;
@@ -25,6 +26,7 @@ public class RopePoint : MonoBehaviour {
     void Start () {
         ropeController = transform.parent.GetComponentInChildren<UltimateRope>();
         expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
+        rope = CreateElement.Instance.GetRope(transform.parent.name);
     }
 	
 	// Update is called once per frame
@@ -64,39 +66,12 @@ public class RopePoint : MonoBehaviour {
             {
                 linkObj = coli.gameObject;
                 eleLine = CreateElement.Instance.GetElement(transform.parent.name);
-              //  Debug.Log(linkObj.transform.parent.name);
                 linkedEle = CreateElement.Instance.GetElement(linkObj.transform.parent.name);
-                if (transform.name == ResourceTool.STARTPOINT)
-                {
-                    //eleLine.startIsLinked = true;
-                    //eleLine.startEleObj = linkedEle;
-                    if (linkObj.name == ResourceTool.STARTPOINT)
-                    {
-                        //linkedEle.startEleObj = eleLine;
-                    }
-                    else
-                    {
-                        //linkedEle.endEle = eleLine;
-                    }
-                }
-                else
-                {
-                    //eleLine.endIsLinked = true;
-                    //eleLine.endEle = linkedEle;
-                    if (linkObj.name == ResourceTool.STARTPOINT)
-                    {
-                        //linkedEle.startEleObj = eleLine;
-                    }
-                    else
-                    {
-                        //linkedEle.endEle = eleLine;
-                    }
-                }
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;
               //  Debug.Log("bling~连接");
                 isLink = true;
-
+                
             }
         }
     }

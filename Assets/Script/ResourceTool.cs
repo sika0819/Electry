@@ -30,6 +30,7 @@ public static class ResourceTool{
         LightPreb = Resources.Load<GameObject>("Prefab/Light");
     }
     public static GameObject InstitateGameObject(GameObject prefab) {
+        //Debug.Log(prefab.name);
         GameObject temp;
         temp= GameObject.Instantiate<GameObject>(prefab);
         temp.transform.localPosition = Vector3.zero;

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ElecLight : Element {
     Light elecLight;
+    public ElecLight(Element e) {
+        Init(e);
+    }
     public bool isTurnOn {
         get {
             return turnOn;
@@ -29,6 +32,7 @@ public class ElecLight : Element {
         }
     }
     public void TurnLight(bool isOn) {
+        if(elecLight!=null)
         elecLight.enabled = isOn;
        
     }

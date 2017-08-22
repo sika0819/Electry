@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Rope : Element {
+ 
     public UltimateRope ropeControl;
+    public Rope() { }
+    public Rope(Element e) {
+        this.Init(e);
+    }
     public void InitRope() {
         if (EleObj != null)
         {
@@ -17,5 +22,10 @@ public class Rope : Element {
     public void SetLength(int length )
     {
         ropeControl.TotalRopeLength = length;
+    }
+    public void Link(Vertex pos, Vertex negative) {
+        this.Pos = pos;
+        this.Negative = negative;
+        ElectryEdge = new ElecEdge(Pos,Negative);
     }
 }

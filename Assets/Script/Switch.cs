@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Switch : Element {
+public class EleSwitch : Element {
     Animator switchAnim;
     bool isTurnOn=false;
+
+    public EleSwitch(Element ele)
+    {
+        Init(ele);
+    }
+
     public void InitSwitch() {
         InitEleType(ElementType.Switch);
         SetResistance(0);

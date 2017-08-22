@@ -14,11 +14,11 @@ public class GenrateIndex {
         }
     }
     private static GenrateIndex _instance;
-    private static int index=0;
+    private int index=0;
     public  int Index {
         get
         {
-            Debug.Log(index);
+          //  Debug.Log(index);
             return index++;
         }
     }

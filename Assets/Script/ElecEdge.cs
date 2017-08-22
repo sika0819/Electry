@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ElecEdge {//电流图的边
+    public string name;
     private float resistance;//电阻
     private float voltage;//电压
     private float electry;//电流
@@ -14,7 +15,7 @@ public class ElecEdge {//电流图的边
         this.from = from;
         this.to = to;
     }
-
+    
     public Vertex getFrom()
     {
         return from;

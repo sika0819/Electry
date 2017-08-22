@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Vertex {
+    public string name {
+        get {
+            return pointObj.name;
+        }
+    }
     private int i;//序号
     public int index {
         get {

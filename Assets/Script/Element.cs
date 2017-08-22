@@ -8,69 +8,123 @@ public class Element{//电子元器件基类
     private Vertex pos;//正极点
     private Vertex negative;//负极点
     private ElementType elementType;
-    public float Currency {
-        get {
-            return pos.Electry;
-        }
-    }
-    public float Resistance {
-        get {
-            return electryElement.Resistance;
-        }set {
-            electryElement.Resistance = value;
-        }
-    }
-    public GameObject EleObj//电子元器件物体
-    {
-        get {
-            return eleObj;
-        }set {
-            eleObj = value;
-        }
-    }
+    
     private GameObject eleObj;
     private GameObject consoleArea;
+    #region public Property
     public string name {
         get {
             return eleObj.name;
         }
     }
-
-    public void Init(GameObject obj,int i)
+    public float Currency
     {
-        eleObj = obj;
-        eleObj.name = obj.name+i;
-        Debug.Log(obj.name);
-        Debug.Log(eleObj.name);
-        consoleArea = GameObject.Find(ResourceTool.CONSOLEAREA);
-        eleObj = ResourceTool.InstitateGameObject(obj);
-        eleObj.transform.SetParent(consoleArea.transform);
-        if (obj.transform.FindChild(ResourceTool.STARTPOINT))
+        get
         {
-            startEleObj = obj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
-        }
-        else
-        {
-            startEleObj = new GameObject();
-            startEleObj.transform.SetParent(obj.transform);
-            startEleObj.name = ResourceTool.STARTPOINT;
-        }
-        if (obj.transform.FindChild(ResourceTool.ENDPOINT))
-        {
-            endEleObj = obj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
-        }
-        else
-        {
-            endEleObj = new GameObject();
-            endEleObj.transform.SetParent(obj.transform);
-            endEleObj.name = ResourceTool.ENDPOINT;
+            return pos.Electry;
         }
     }
+    public float Resistance
+    {
+        get
+        {
+            return electryElement.Resistance;
+        }
+        set
+        {
+            electryElement.Resistance = value;
+        }
+    }
+    public GameObject EleObj//电子元器件物体
+    {
+        get
+        {
+            return eleObj;
+        }
+        set
+        {
+            eleObj = value;
+        }
+    }
+    public ElecEdge ElectryEdge
+    {//返回元器件
+        get
+        {
+            return electryElement;
+        }set {
+            electryElement = value;
+        }
+    }
+
+    public GameObject startEleObj
+    {
+        get
+        {
+            return pos.PointObj;
+        }
+        set
+        {
+            pos.setGameObj(value);
+        }
+    }
+    public GameObject endEleObj
+    {
+        get
+        {
+            return negative.PointObj;
+        }
+        set
+        {
+            negative.setGameObj(value);
+        }
+    }
+    #endregion
     public Element() {
+        consoleArea = GameObject.Find(ResourceTool.CONSOLEAREA);
+    }
+    public void Init(Element copyEle) {
+        this.eleObj = copyEle.EleObj;
+        this.electryElement = copyEle.ElectryEdge;
+        
+        this.pos = copyEle.Pos;
+        this.negative = copyEle.Negative;
+        this.elementType = copyEle.thisType;
+        startEleObj = copyEle.startEleObj;
+        endEleObj = copyEle.endEleObj;
+    }
+    public void Init(GameObject obj,int i)
+    {
+        
+        eleObj = ResourceTool.InstitateGameObject(obj);
+        eleObj.name = obj.name + i;
+        
         pos = new Vertex(GenrateIndex.Instance.Index);
         negative = new Vertex(GenrateIndex.Instance.Index);
         electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
         electryElement.Resistance = 0;
+        electryElement.name = name;
+
+        eleObj.transform.SetParent(consoleArea.transform);
+        if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))
+        {
+            startEleObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
+        }
+        else
+        {
+            startEleObj = new GameObject();
+            startEleObj.transform.SetParent(eleObj.transform);
+            startEleObj.name = ResourceTool.STARTPOINT;
+        }
+        if (obj.transform.FindChild(ResourceTool.ENDPOINT))
+        {
+            endEleObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
+        }
+        else
+        {
+            endEleObj = new GameObject();
+            endEleObj.transform.SetParent(eleObj.transform);
+            endEleObj.name = ResourceTool.ENDPOINT;
+        }
     }
 
     public virtual void Electry() {
@@ -87,27 +141,7 @@ public class Element{//电子元器件基类
         electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
         electryElement.Resistance = resistance;
     }
-    public ElecEdge ElectryElement{//返回元器件
-        get {
-            return electryElement;
-        }
-    }
-
-    public GameObject startEleObj {
-        get {
-            return pos.PointObj;
-        }
-        set {
-            pos.setGameObj(value);
-        }
-    }
-    public GameObject endEleObj {
-        get {
-            return negative.PointObj;
-        }set {
-            negative.setGameObj(value);
-        }
-    }
+   
     public void SetResistance(float value) {
         Resistance = value;
     }
@@ -135,5 +169,24 @@ public class Element{//电子元器件基类
     public void SetVoltage(float v)
     {
         electryElement.Voltage = v;
+    }
+    public ElementType thisType {
+        get {
+            return elementType;
+        }
+    }
+    public Vertex Pos {
+        get {
+            return pos;
+        }set {
+            pos = value;
+        }
+    }
+    public Vertex Negative {
+        get {
+            return negative;
+        }set {
+            negative = value;
+        }
     }
 }
