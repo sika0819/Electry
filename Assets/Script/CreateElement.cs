@@ -25,6 +25,7 @@ public class CreateElement {
         resistanceList = new List<KeyValuePair<string, Element>>();
         lightList = new List<KeyValuePair<string, ElecLight>>();
         swicthList = new List<KeyValuePair<string, EleSwitch>>();
+        g = new DirectGraph();
     }
     public static CreateElement Instance {
         get
@@ -44,17 +45,16 @@ public class CreateElement {
     {
         elePreb = obj;
         Element ele = new Element();
-        g = new DirectGraph();
         createIndex++;
 
         ele.Init(obj,createIndex);
         ele.InitEleType(createType);
-       
         switch (createType) {
             case ElementType.Line:
                 Rope rope = new Rope(ele);
                 rope.InitRope();
                 ropeList.Add(new KeyValuePair<string, Rope>(rope.name, rope));
+                ele = rope;
                 break;
             case ElementType.Battery:
                 Battery battery = new Battery(ele);
@@ -75,11 +75,15 @@ public class CreateElement {
                 break;
             case ElementType.Resistance:
                 ele.SetResistance(5);
+                resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
                 break;
         }
-        g.addVertex(ele.Pos);
-        g.addVertex(ele.Negative);
-        g.addEdge(ele.ElectryEdge);
+        if (createType!=ElementType.Line){
+            g.addVertex(ele.Pos);
+            g.addVertex(ele.Negative);
+            g.addEdge(ele.ElectryEdge);
+            Debug.Log(g.toString());
+        }
         Ele = ele;
         elementList.Add(ele.name, ele);
     }
@@ -142,6 +146,12 @@ public class CreateElement {
         }
         return null;
     }
+    public void LinkByRope(string ropeName,Element startEle,Element endEle) {
+        Rope nowRope = GetRope(ropeName);
+        nowRope.ElectryEdge = new ElecEdge(startEle.Negative,endEle.Pos);
+        g.addEdge(nowRope.ElectryEdge);
+    }
+
     public void OnDestory() {
         elementList.Clear();
         elementList = null;

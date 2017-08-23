@@ -56,26 +56,44 @@ public class Element{//电子元器件基类
         }
     }
 
-    public GameObject startEleObj
+    public GameObject startVertexObj
     {
         get
         {
+            if(pos!=null)
             return pos.PointObj;
+            Debug.LogError("获取点程序错误");
+            return null;
         }
         set
         {
-            pos.setGameObj(value);
+            if (pos != null)
+            {
+                pos.setGameObj(value);
+            }
+            else {
+                Debug.LogError("获取点程序错误");
+            }
         }
     }
-    public GameObject endEleObj
+    public GameObject endVertexObj
     {
         get
         {
+            if(negative!=null)
             return negative.PointObj;
+            Debug.LogError("获取点程序错误");
+            return null;
         }
         set
         {
-            negative.setGameObj(value);
+            if (negative != null)
+            {
+                negative.setGameObj(value);
+            }
+            else {
+                Debug.LogError("获取点程序错误");
+            }
         }
     }
     #endregion
@@ -85,46 +103,16 @@ public class Element{//电子元器件基类
     public void Init(Element copyEle) {
         this.eleObj = copyEle.EleObj;
         this.electryElement = copyEle.ElectryEdge;
-        
         this.pos = copyEle.Pos;
         this.negative = copyEle.Negative;
         this.elementType = copyEle.thisType;
-        startEleObj = copyEle.startEleObj;
-        endEleObj = copyEle.endEleObj;
     }
     public void Init(GameObject obj,int i)
     {
-        
         eleObj = ResourceTool.InstitateGameObject(obj);
         eleObj.name = obj.name + i;
-        
-        pos = new Vertex(GenrateIndex.Instance.Index);
-        negative = new Vertex(GenrateIndex.Instance.Index);
-        electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
-        electryElement.Resistance = 0;
-        electryElement.name = name;
-
         eleObj.transform.SetParent(consoleArea.transform);
-        if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))
-        {
-            startEleObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
-        }
-        else
-        {
-            startEleObj = new GameObject();
-            startEleObj.transform.SetParent(eleObj.transform);
-            startEleObj.name = ResourceTool.STARTPOINT;
-        }
-        if (obj.transform.FindChild(ResourceTool.ENDPOINT))
-        {
-            endEleObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
-        }
-        else
-        {
-            endEleObj = new GameObject();
-            endEleObj.transform.SetParent(eleObj.transform);
-            endEleObj.name = ResourceTool.ENDPOINT;
-        }
+        
     }
 
     public virtual void Electry() {
@@ -148,11 +136,50 @@ public class Element{//电子元器件基类
     public void InitEleType(ElementType initType)
     {
         elementType = initType;
+        if (initType != ElementType.Line)
+        {
+            Debug.Log("加入顶点");
+            pos = new Vertex(GenrateIndex.Instance.Index);
+            negative = new Vertex(GenrateIndex.Instance.Index);
+            electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
+            electryElement.Resistance = 0;
+            electryElement.name = name;
+        }
+        else {
+            pos = new Vertex();
+            negative = new Vertex();
+        }
+        
+        if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))
+        {
+            startVertexObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
+        }
+        else
+        {
+            startVertexObj = new GameObject();
+            startVertexObj.transform.SetParent(eleObj.transform);
+            startVertexObj.name = ResourceTool.STARTPOINT;
+        }
+        if (eleObj.transform.FindChild(ResourceTool.ENDPOINT))
+        {
+            endVertexObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
+        }
+        else
+        {
+            endVertexObj = new GameObject();
+            endVertexObj.transform.SetParent(eleObj.transform);
+            endVertexObj.name = ResourceTool.ENDPOINT;
+        }
+        if (initType != ElementType.Line)
+        {
+            startVertexObj.name = ResourceTool.STARTPOINT + pos.index;
+            endVertexObj.name = ResourceTool.ENDPOINT + negative.index;
+        }
     }
     public void SetPoint(Vector3 start, Vector3 end)
     {
-        startEleObj.transform.localPosition = start;
-        endEleObj.transform.localPosition = end;
+        startVertexObj.transform.localPosition = start;
+        endVertexObj.transform.localPosition = end;
     }
     public void SetPosition(Vector3 pos)
     {

@@ -36,9 +36,10 @@ public class DirectGraph {//电流图
         if (!vertexArray.ContainsKey(vertex.index))
         {
             vertexArray.Add(vertex.index, vertex);
+            Debug.Log("添加节点:"+vertex.index);
         }
         else {
-            throw new System.Exception("字典重复"+vertex.index);
+            Debug.LogError("字典重复"+vertex.index);
         }
     }
     public void addEdge(ElecEdge e)
@@ -54,9 +55,12 @@ public class DirectGraph {//电流图
                 addVertex(e.getTo());
             vertexArray[e.getFrom().index].adj.Add(e);
         }
+        Debug.Log("添加边:节点"+e.getFrom().index+"————>节点"+e.getTo().index);
+        CheckCircle();
         edgeCount++;
+       
     }
-
+    
     public void addEdge(int from, int to) {
         ElecEdge e = new ElecEdge(vertexArray[from], vertexArray[to]);
         addEdge(e);
@@ -75,6 +79,14 @@ public class DirectGraph {//电流图
             return vertexArray[index];
         else
             throw new KeyNotFoundException("vertex " + index + " is not between 0 and " + (vertexCount - 1));
+    }
+    public Vertex getVertex(string name)
+    {
+        for (int i = 0; i < vertexArray.Count;i++) {
+            if (vertexArray[i].name == name)
+                return vertexArray[i];
+        }
+        return null;
     }
     public List<ElecEdge> getAdj(int v)
     {
@@ -179,7 +191,7 @@ public class DirectGraph {//电流图
             for (int j = 0; j < vertexArray[i].adj.Count; j++)
             {
                 ElecEdge e = vertexArray[i].adj[j];
-                s += "顶点："+e.getTo().index + " 电阻[" + e.Resistance + "],电压["+e.Voltage+"] ";
+                s += "电子元器件："+e.name+" 电压["+e.Voltage+"] 电流["+e.Electry+"] 电阻:["+e.Resistance+"]";
             }
             s += "\n";
         }
@@ -216,6 +228,11 @@ public class DirectGraph {//电流图
             }
         }
         Debug.LogError("该线路没有与电池连接！！");
+        return false;
+    }
+    public bool HasPath(Vertex v1, Vertex v2)
+    {
+        
         return false;
     }
 }

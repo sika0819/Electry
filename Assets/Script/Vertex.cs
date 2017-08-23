@@ -26,13 +26,16 @@ public class Vertex {
         this.i = i;
         adj = new List<ElecEdge>();
     }
-    public Vertex(GameObject obj,int i) {
-        this.pointObj = obj;
-        this.i = i;
-        adj = new List<ElecEdge>();
+
+    public Vertex()
+    {
+        
     }
+
     public void setGameObj(GameObject obj) {
         pointObj = obj;
+        pointObj.name = obj.name;
+        Debug.Log(name);
     }
     public GameObject PointObj {
         get {
