@@ -3,14 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Rope : Element {
-    public GameObject[] linkArray;
+    public Node linkNode {
+        get {
+            return _linkEle;
+        }set {
+            if (_linkEle == null)
+            {
+                _linkEle = value;
+            }
+            else
+            {
+                Link(_linkEle, value);
+                _linkEle = value;
+            }
+                
+        }
+    }
+    private Node _linkEle;
     public UltimateRope ropeControl;
+    bool HasEdge {
+        get {
+            return LineEdge != null;
+        }
+    }
     int i = 0;
     public Rope() {
-        linkArray = new GameObject[2];
+
     }
     public Rope(Element e) {
-        linkArray = new GameObject[2];
+
         this.Init(e);
     }
     public void InitRope() {
@@ -28,24 +49,25 @@ public class Rope : Element {
         ropeControl.TotalRopeLength = length;
     }
     
-    public void Link(Vertex pos, Vertex negative) {
-        this.Pos = pos;
-        this.Negative = negative;
-        ElectryEdge = new ElecEdge(Pos,Negative);
+    public void Link(Node node1, Node node2) {
+        if (!HasEdge)
+        {
+            LineEdge = new Edge(node1, node2);
+            CreateElement.Instance.lineGraph.addEdge(LineEdge);
+        }
+        else {
+            CreateElement.Instance.lineGraph.removeEdge(LineEdge);
+            LineEdge = new Edge(node1, node2);
+            CreateElement.Instance.lineGraph.addEdge(LineEdge);
+        }
     }
     public bool IsLinked{
         get {
-            return Pos != null && Negative != null;
+            bool linked = Pos != null && Negative != null;
+            if (linked)
+                ElectryEdge = new ElecEdge(Pos,Negative);
+            return linked;
         }
     }
-    public void Link() {
-       
-        if (linkArray[0] != null && linkArray[1] != null)
-        {
-            Vertex v1= CreateElement.Instance.g.getVertex(linkArray[0].name);
-            
-            if (IsLinked)
-                Link(Pos, Negative);
-        }
-    }
+   
 }

@@ -25,7 +25,10 @@ public class Edge{//电子元器件相当于加权边，有两个节点
         Debug.Log("error! arg expect: " + v + " or " + w + ",but receive:" + i);
         return null;
     }
-
+    public void SetNode(Node i,Node j) {
+        v = i;
+        w = j;
+    }
 
     public string toString()
     {
@@ -45,5 +48,17 @@ public class Edge{//电子元器件相当于加权边，有两个节点
         }set {
             voltage = value;
         }
+    }
+    public bool isEqual(Edge e) {
+        bool equal = false;
+        if (e.either().index==v.index&&e.other(v).index==w.index)
+        {
+            equal = true;
+        }
+        if (e.either().index == w.index && e.other(w).index == v.index)
+        {
+            equal = true;
+        }
+        return equal;
     }
 }

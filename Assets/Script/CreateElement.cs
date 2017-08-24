@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 public enum ElementType
@@ -18,14 +19,16 @@ public class CreateElement {
     List<KeyValuePair<string, EleSwitch>> swicthList;
     List<KeyValuePair<string, Rope>> ropeList;
     static int createIndex=0;
-    public DirectGraph g;
+    public LineGraph lineGraph;
+    public DirectGraph electryGraph;
     public CreateElement() {
         batteryList = new List<KeyValuePair<string, Battery>>();
         ropeList = new List<KeyValuePair<string, Rope>>();
         resistanceList = new List<KeyValuePair<string, Element>>();
         lightList = new List<KeyValuePair<string, ElecLight>>();
         swicthList = new List<KeyValuePair<string, EleSwitch>>();
-        g = new DirectGraph();
+        lineGraph = new LineGraph();
+        electryGraph = new DirectGraph();
     }
     public static CreateElement Instance {
         get
@@ -47,7 +50,7 @@ public class CreateElement {
         Element ele = new Element();
         createIndex++;
 
-        ele.Init(obj,createIndex);
+        ele.Init(elePreb,createIndex);
         ele.InitEleType(createType);
         switch (createType) {
             case ElementType.Line:
@@ -60,6 +63,10 @@ public class CreateElement {
                 Battery battery = new Battery(ele);
                 battery.InitBattery(10);
                 batteryList.Add(new KeyValuePair<string, Battery>(battery.name,battery));
+                electryGraph.addVertex(ele.Pos);
+                electryGraph.addVertex(ele.Negative);
+                electryGraph.addEdge(ele.ElectryEdge);
+                electryGraph.SetBattery(ele.ElectryEdge);
                 ele = battery;
                 break;
             case ElementType.Light:
@@ -78,15 +85,26 @@ public class CreateElement {
                 resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
                 break;
         }
-        if (createType!=ElementType.Line){
-            g.addVertex(ele.Pos);
-            g.addVertex(ele.Negative);
-            g.addEdge(ele.ElectryEdge);
-            Debug.Log(g.toString());
-        }
+        lineGraph.addVertex(ele.Point1);
         Ele = ele;
         elementList.Add(ele.name, ele);
     }
+
+    public Node GetPoint(string name)
+    {
+        foreach(KeyValuePair<string,Element>item in elementList) {
+            if (item.Value.Point1.name == name)
+            {
+                return item.Value.Point1;
+            }
+            if (item.Value.Point2.name == name)
+            {
+                return item.Value.Point2;
+            }
+        }
+        return null;
+    }
+
     public void UpdateElectry()
     {
         
@@ -146,11 +164,7 @@ public class CreateElement {
         }
         return null;
     }
-    public void LinkByRope(string ropeName,Element startEle,Element endEle) {
-        Rope nowRope = GetRope(ropeName);
-        nowRope.ElectryEdge = new ElecEdge(startEle.Negative,endEle.Pos);
-        g.addEdge(nowRope.ElectryEdge);
-    }
+ 
 
     public void OnDestory() {
         elementList.Clear();

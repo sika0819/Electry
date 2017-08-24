@@ -6,7 +6,7 @@ public class RopePoint : MonoBehaviour {
     bool isMove=false;
     UltimateRope ropeController;
     Camera expCamera;
-    Element linkedEle;
+    Node linkedPoint;
     Rope rope;
     public GameObject linkObj {
         get {
@@ -65,22 +65,13 @@ public class RopePoint : MonoBehaviour {
             if (!isLink)
             {
                 linkObj = coli.gameObject;
-                linkedEle = CreateElement.Instance.GetElement(linkObj.transform.parent.name);
+                Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;
                 //  Debug.Log("bling~连接");
                 isLink = true;
-                if (gameObject.name.Contains(ResourceTool.STARTPOINT)) {
-                    rope.startVertexObj = gameObject;
-                    rope.startVertexObj.name = gameObject.name;
-                    rope.linkArray[0] = linkObj;
-                }
-                else if(gameObject.name.Contains(ResourceTool.ENDPOINT)){
-                    rope.endVertexObj = gameObject;
-                    rope.endVertexObj.name = gameObject.name;
-                    rope.linkArray[1] = linkObj;
-                }
-                rope.Link();
+                linkedPoint = linkPoint;
+                rope.linkNode = linkedPoint;
             }
         }
     }

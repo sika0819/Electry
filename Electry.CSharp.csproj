@@ -76,9 +76,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Battery.cs" />
+    <Compile Include="Assets\Script\Circle.cs" />
     <Compile Include="Assets\Script\CreateElement.cs" />
     <Compile Include="Assets\Script\DirectGraph.cs" />
+    <Compile Include="Assets\Script\DirectedDFS.cs" />
     <Compile Include="Assets\Script\Edge.cs" />
+    <Compile Include="Assets\Script\EleSwitch.cs" />
     <Compile Include="Assets\Script\ElecEdge.cs" />
     <Compile Include="Assets\Script\ElecLight.cs" />
     <Compile Include="Assets\Script\Element.cs" />
@@ -91,7 +94,6 @@
     <Compile Include="Assets\Script\ResourceTool.cs" />
     <Compile Include="Assets\Script\Rope.cs" />
     <Compile Include="Assets\Script\RopePoint.cs" />
-    <Compile Include="Assets\Script\Switch.cs" />
     <Compile Include="Assets\Script\Test.cs" />
     <Compile Include="Assets\Script\Vertex.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\DieTimer.cs" />

@@ -7,6 +7,9 @@ public class Element{//电子元器件基类
     private ElecEdge electryElement;//边节点
     private Vertex pos;//正极点
     private Vertex negative;//负极点
+    private Edge insideEdge;
+    private Node point1;
+    private Node point2;
     private ElementType elementType;
     
     private GameObject eleObj;
@@ -55,47 +58,65 @@ public class Element{//电子元器件基类
             electryElement = value;
         }
     }
-
-    public GameObject startVertexObj
+    public Edge LineEdge {
+        get {
+            return insideEdge;
+        }set {
+            insideEdge = value;
+        }
+    }
+    public Node Point1 {
+        get {
+            return insideEdge.either();
+        }
+    }
+    public Node Point2 {
+        get {
+            return insideEdge.other(point1);
+        }
+    }
+    public GameObject StartVertexObj
     {
         get
         {
-            if(pos!=null)
-            return pos.PointObj;
+            if(startVertexObj != null)
+            return startVertexObj;
             Debug.LogError("获取点程序错误");
             return null;
         }
         set
         {
-            if (pos != null)
+            if (value != null)
             {
-                pos.setGameObj(value);
+                startVertexObj = value;
             }
             else {
                 Debug.LogError("获取点程序错误");
             }
         }
     }
-    public GameObject endVertexObj
+    private GameObject startVertexObj;
+    public GameObject EndVertexObj
     {
         get
         {
-            if(negative!=null)
-            return negative.PointObj;
+            if(endVertexObj != null)
+            return endVertexObj;
             Debug.LogError("获取点程序错误");
             return null;
         }
         set
         {
-            if (negative != null)
+            if (value != null)
             {
-                negative.setGameObj(value);
+                endVertexObj=value;
             }
             else {
                 Debug.LogError("获取点程序错误");
             }
         }
     }
+    private GameObject endVertexObj;
     #endregion
     public Element() {
         consoleArea = GameObject.Find(ResourceTool.CONSOLEAREA);
@@ -122,13 +143,7 @@ public class Element{//电子元器件基类
         pos.setElectry(current);
         negative.setElectry(current);
     }
-    public Element(float resistance)
-    {
-        pos = new Vertex(GenrateIndex.Instance.Index);
-        negative = new Vertex(GenrateIndex.Instance.Index);
-        electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
-        electryElement.Resistance = resistance;
-    }
+    
    
     public void SetResistance(float value) {
         Resistance = value;
@@ -141,9 +156,12 @@ public class Element{//电子元器件基类
             Debug.Log("加入顶点");
             pos = new Vertex(GenrateIndex.Instance.Index);
             negative = new Vertex(GenrateIndex.Instance.Index);
+            point1 = new Node(pos.index);
+            point2 = new Node(negative.index);
             electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
             electryElement.Resistance = 0;
             electryElement.name = name;
+            insideEdge = new Edge(point1, point2); 
         }
         else {
             pos = new Vertex();
@@ -152,34 +170,34 @@ public class Element{//电子元器件基类
         
         if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))
         {
-            startVertexObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
+            StartVertexObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
         }
         else
         {
-            startVertexObj = new GameObject();
-            startVertexObj.transform.SetParent(eleObj.transform);
-            startVertexObj.name = ResourceTool.STARTPOINT;
+            StartVertexObj = new GameObject();
+            StartVertexObj.transform.SetParent(eleObj.transform);
+            StartVertexObj.name = ResourceTool.STARTPOINT;
         }
         if (eleObj.transform.FindChild(ResourceTool.ENDPOINT))
         {
-            endVertexObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
+            EndVertexObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
         }
         else
         {
-            endVertexObj = new GameObject();
-            endVertexObj.transform.SetParent(eleObj.transform);
-            endVertexObj.name = ResourceTool.ENDPOINT;
+            EndVertexObj = new GameObject();
+            EndVertexObj.transform.SetParent(eleObj.transform);
+            EndVertexObj.name = ResourceTool.ENDPOINT;
         }
         if (initType != ElementType.Line)
         {
-            startVertexObj.name = ResourceTool.STARTPOINT + pos.index;
-            endVertexObj.name = ResourceTool.ENDPOINT + negative.index;
+            StartVertexObj.name = ResourceTool.STARTPOINT + pos.index;
+            EndVertexObj.name = ResourceTool.ENDPOINT + negative.index;
         }
     }
     public void SetPoint(Vector3 start, Vector3 end)
     {
-        startVertexObj.transform.localPosition = start;
-        endVertexObj.transform.localPosition = end;
+        StartVertexObj.transform.localPosition = start;
+        EndVertexObj.transform.localPosition = end;
     }
     public void SetPosition(Vector3 pos)
     {

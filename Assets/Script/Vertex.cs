@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Vertex {
-    public string name {
-        get {
-            return pointObj.name;
-        }
-    }
+   
     private int i;//序号
     public int index {
         get {
@@ -32,16 +28,7 @@ public class Vertex {
         
     }
 
-    public void setGameObj(GameObject obj) {
-        pointObj = obj;
-        pointObj.name = obj.name;
-        Debug.Log(name);
-    }
-    public GameObject PointObj {
-        get {
-            return pointObj;
-        }
-    }
+   
     public void setElectry(float e) {
         electry = e;//当前点电流
     }

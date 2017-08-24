@@ -1,12 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LineGraph{//电路图
-    private List<Node> vertxList;//邻接表,每个顶点都要有。
+    private Dictionary<int,Node> vertxList;//邻接表,每个顶点都要有。
     private int edgeCount=0;//边节点数量
     public LineGraph() {
-        vertxList = new List<Node>();//储存序号
+        vertxList = new Dictionary<int, Node>();//储存序号
     }
     public int VertexCount
     {//顶点数量
@@ -20,7 +21,10 @@ public class LineGraph{//电路图
         }
     }
     public void addVertex(Node vertex) {
-        vertxList.Add(vertex);
+        if (!vertxList.ContainsKey(vertex.index))
+        {
+            vertxList.Add(vertex.index,vertex);
+        }
     }
     public void addEdge(Edge e) {
         Node v = e.either();
@@ -67,4 +71,18 @@ public class LineGraph{//电路图
         return s;
     }
 
+    public void removeEdge(Edge lineEdge)
+    {
+        for (int i = 0; i < VertexCount; i++)
+        {
+            for (int j = vertxList[i].adj.Count-1; j >=0; j--)
+            {
+                if (vertxList[i].adj[j].Equals(lineEdge))
+                {
+                    vertxList[i].adj.RemoveAt(j);
+                }
+            }
+            
+        }
+    }
 }

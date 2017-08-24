@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DirectGraph {//电流图
-    private ElecEdge battery;
+    public ElecEdge battery;
     private Dictionary<int,Vertex> vertexArray;//顶点表
     private int vertexCount {
         get {
@@ -55,15 +55,23 @@ public class DirectGraph {//电流图
                 addVertex(e.getTo());
             vertexArray[e.getFrom().index].adj.Add(e);
         }
-        Debug.Log("添加边:节点"+e.getFrom().index+"————>节点"+e.getTo().index);
+       
         CheckCircle();
         edgeCount++;
-       
+        Debug.Log("添加边:节点" + e.getFrom().index + "————>节点" + e.getTo().index);
+        Debug.Log(toString());
     }
     
     public void addEdge(int from, int to) {
         ElecEdge e = new ElecEdge(vertexArray[from], vertexArray[to]);
         addEdge(e);
+    }
+    public void removeEdge(ElecEdge e) {
+        if (vertexArray.ContainsKey(e.getFrom().index))
+        {
+            if (vertexArray[e.getFrom().index].adj.Contains(e))
+                vertexArray[e.getFrom().index].adj.Remove(e);
+        }
     }
     public int getVertexCount()
     {
@@ -80,14 +88,7 @@ public class DirectGraph {//电流图
         else
             throw new KeyNotFoundException("vertex " + index + " is not between 0 and " + (vertexCount - 1));
     }
-    public Vertex getVertex(string name)
-    {
-        for (int i = 0; i < vertexArray.Count;i++) {
-            if (vertexArray[i].name == name)
-                return vertexArray[i];
-        }
-        return null;
-    }
+   
     public List<ElecEdge> getAdj(int v)
     {
         return vertexArray[v].adj;
@@ -230,9 +231,5 @@ public class DirectGraph {//电流图
         Debug.LogError("该线路没有与电池连接！！");
         return false;
     }
-    public bool HasPath(Vertex v1, Vertex v2)
-    {
-        
-        return false;
-    }
+    
 }
