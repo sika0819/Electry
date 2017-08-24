@@ -85,7 +85,7 @@ public class CreateElement {
                 resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
                 break;
         }
-        lineGraph.addVertex(ele.Point1);
+        
         Ele = ele;
         elementList.Add(ele.name, ele);
     }

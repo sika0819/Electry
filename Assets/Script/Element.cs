@@ -67,12 +67,12 @@ public class Element{//电子元器件基类
     }
     public Node Point1 {
         get {
-            return insideEdge.either();
+            return point1;
         }
     }
     public Node Point2 {
         get {
-            return insideEdge.other(point1);
+            return point2;
         }
     }
     public GameObject StartVertexObj
@@ -127,6 +127,7 @@ public class Element{//电子元器件基类
         this.pos = copyEle.Pos;
         this.negative = copyEle.Negative;
         this.elementType = copyEle.thisType;
+        
     }
     public void Init(GameObject obj,int i)
     {
@@ -166,6 +167,8 @@ public class Element{//电子元器件基类
         else {
             pos = new Vertex();
             negative = new Vertex();
+            point1 = new Node();
+            point2 = new Node();
         }
         
         if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))

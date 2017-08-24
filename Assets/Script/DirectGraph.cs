@@ -36,7 +36,7 @@ public class DirectGraph {//电流图
         if (!vertexArray.ContainsKey(vertex.index))
         {
             vertexArray.Add(vertex.index, vertex);
-            Debug.Log("添加节点:"+vertex.index);
+            //Debug.Log("添加节点:"+vertex.index);
         }
         else {
             Debug.LogError("字典重复"+vertex.index);
@@ -56,10 +56,10 @@ public class DirectGraph {//电流图
             vertexArray[e.getFrom().index].adj.Add(e);
         }
        
-        CheckCircle();
+       // CheckCircle();
         edgeCount++;
-        Debug.Log("添加边:节点" + e.getFrom().index + "————>节点" + e.getTo().index);
-        Debug.Log(toString());
+        //Debug.Log("添加边:节点" + e.getFrom().index + "————>节点" + e.getTo().index);
+        //Debug.Log(toString());
     }
     
     public void addEdge(int from, int to) {

@@ -1,6 +1,5 @@
 Base path: D:/5.5.0/Editor/Data
 Cmd: getPlatforms
-Cmd: preprocess
-  insize=951 outsize=1148 ok=1
-Cmd: preprocess
-  insize=1449 outsize=864 ok=1
+Unhandled exception: Protocol error - failed to read correct magic number
+
+Quitting shader compiler process

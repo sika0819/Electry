@@ -76,7 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Battery.cs" />
-    <Compile Include="Assets\Script\Circle.cs" />
     <Compile Include="Assets\Script\CreateElement.cs" />
     <Compile Include="Assets\Script\DirectGraph.cs" />
     <Compile Include="Assets\Script\DirectedDFS.cs" />
@@ -88,6 +87,7 @@
     <Compile Include="Assets\Script\EventTriggerListener.cs" />
     <Compile Include="Assets\Script\Experiment.cs" />
     <Compile Include="Assets\Script\GenrateIndex.cs" />
+    <Compile Include="Assets\Script\LineCircle.cs" />
     <Compile Include="Assets\Script\LineGraph.cs" />
     <Compile Include="Assets\Script\MainController.cs" />
     <Compile Include="Assets\Script\Node.cs" />

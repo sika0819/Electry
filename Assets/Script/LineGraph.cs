@@ -6,8 +6,11 @@ using UnityEngine;
 public class LineGraph{//电路图
     private Dictionary<int,Node> vertxList;//邻接表,每个顶点都要有。
     private int edgeCount=0;//边节点数量
+    private List<List<Node>> circlelist;
+
     public LineGraph() {
         vertxList = new Dictionary<int, Node>();//储存序号
+        circlelist = new List<List<Node>>();
     }
     public int VertexCount
     {//顶点数量
@@ -38,6 +41,9 @@ public class LineGraph{//电路图
         Node b = vertxList[w];
         Edge e = new Edge(a, b);
         addEdge(e);
+    }
+    public Node getVertex(int v) {
+        return vertxList[v];
     }
     public List<Edge> getAdj(int v)
     {//返回v点相连的边
@@ -85,4 +91,5 @@ public class LineGraph{//电路图
             
         }
     }
+   
 }
