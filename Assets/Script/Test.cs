@@ -47,12 +47,12 @@ public class Test : MonoBehaviour {
         g2.addEdge(2,3);
         g2.addEdge(3,0);
 
+        LineCircle c = new LineCircle(g2);
         //Debug.Log(g.toString());
         //g.CheckCircle();
         //Debug.Log("是否串联"+g.isSeries());
         Debug.Log(g2.toString());
-        LineCircle c = new LineCircle(g2);
-        Debug.Log(c);
+        Debug.Log(c.ToString());
     }
 	
 	// Update is called once per frame
