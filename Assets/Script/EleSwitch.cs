@@ -12,7 +12,6 @@ public class EleSwitch : Element {
     }
 
     public void InitSwitch() {
-        InitEleType(ElementType.Switch);
         SetResistance(0);
         switchAnim = EleObj.GetComponentInChildren<Animator>();
     }

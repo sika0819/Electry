@@ -58,9 +58,9 @@ public class ElecEdge {//电流图的边
         }
     }
 
-    public string toString()
+    public override string ToString()
     {
-        string s = from + " -> " + to + ", 电阻: " + resistance+"电压："+voltage+"电流："+electry;
+        string s = from.index + " -> " + to.index + ", 电阻: " + resistance+"电压："+voltage+"电流："+electry+";    ";
         return s;
     }
     public bool hasPathTo(int v) {

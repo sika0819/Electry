@@ -7,7 +7,7 @@ public class LineGraph{//电路图
     private Dictionary<int,Node> vertxList;//邻接表,每个顶点都要有。
     private int edgeCount=0;//边节点数量
     private List<List<Node>> circlelist;
-
+    public Element battery;
     public LineGraph() {
         vertxList = new Dictionary<int, Node>();//储存序号
         circlelist = new List<List<Node>>();
@@ -24,6 +24,7 @@ public class LineGraph{//电路图
         }
     }
     public void addVertex(Node vertex) {
+        //Debug.Log("添加节点："+vertex.index);
         if (!vertxList.ContainsKey(vertex.index))
         {
             vertxList.Add(vertex.index,vertex);
@@ -32,9 +33,14 @@ public class LineGraph{//电路图
     public void addEdge(Edge e) {
         Node v = e.either();
         Node w = e.other(v);
-        vertxList[v.index].adj.Add(e);
-        vertxList[w.index].adj.Add(e);
+        if (vertxList.ContainsKey(v.index))
+        {
+            vertxList[v.index].adj.Add(e);
+            vertxList[w.index].adj.Add(e);
+        }
         edgeCount++;
+        Debug.Log("添加边:节点" + v.index + "————>节点" + w.index);
+        Debug.Log(ToString());
     }
     public void addEdge(int v, int w) {
         Node a = vertxList[v];
@@ -61,7 +67,7 @@ public class LineGraph{//电路图
         }
         return edges;
     }
-    public string toString()
+    public override string ToString()
     {
         string s = VertexCount + " 个顶点, " + EdgeCount + " 条边\n";
         for (int i = 0; i < VertexCount; i++)
@@ -70,7 +76,7 @@ public class LineGraph{//电路图
             for (int j = 0; j < vertxList[i].adj.Count; j++)
             {
                 Edge e = vertxList[i].adj[j];
-                s += "节点："+e.other(vertxList[i]).index;
+                s += "节点："+e.other(vertxList[i]).index+" ";
             }
             s += "\n";
         }
@@ -91,5 +97,7 @@ public class LineGraph{//电路图
             
         }
     }
-   
+    public void setBattery(Element battery) {
+        this.battery = battery;
+    }
 }

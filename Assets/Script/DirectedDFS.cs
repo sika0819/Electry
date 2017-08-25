@@ -11,18 +11,18 @@ public class DirectedDFS
     private int[] edgeTo;        // edgeTo[v] = last edge on s-v path
     private int[] directEdgeTo;
     private int s;         // source vertex
-    public DirectedDFS(DirectGraph G, int s)
+    public DirectedDFS(DirectGraph G, Vertex s)
     {
-        marked = new bool[G.getVertexCount()];
-        this.s = s;
+        directMarked = new bool[G.getVertexCount()];
+        this.s = s.index;
         directEdgeTo = new int[G.getVertexCount()];
-        dfs(G, s);
+        dfs(G, s.index);
     }
-    public DirectedDFS(LineGraph G,int s) {
-        this.s = s;
+    public DirectedDFS(LineGraph G,Node s) {
+        this.s = s.index;
         edgeTo = new int[G.VertexCount];
-        directMarked = new bool[G.VertexCount];
-        dfs(G, s);
+        marked = new bool[G.VertexCount];
+        dfs(G, s.index);
     }
     private void dfs(LineGraph G, int v)
     {
@@ -56,33 +56,33 @@ public class DirectedDFS
             }
         }
     }
-    public bool hasPathTo(int v)
+    public bool hasPathTo(Node v)
     {
-        return marked[v];
+        return marked[v.index];
     }
-    public bool hasDirected(int v)
+    public bool hasDirected(Vertex v)
     {
-        return directMarked[v];
+        return directMarked[v.index];
     }
     public int getCount()
     {
         return count;
     }
-    public Stack<int> pathTo(int v)
+    public List<int> pathTo(Node v)
     {
         if (!hasPathTo(v)) return null;
-        Stack<int> path = new Stack<int>();
-        for (int x = v; x != s; x = edgeTo[x])
-            path.Push(x);
-        path.Push(s);
+        List<int> path = new List<int>();
+        for (int x = v.index; x != s; x = edgeTo[x])
+            path.Add(x);
+        path.Add(s);
         return path;
     }
-    public Stack<int> directedPathTo(int v) {
-        if (!hasPathTo(v)) return null;
-        Stack<int> path = new Stack<int>();
-        for (int x = v; x != s; x = edgeTo[x])
-            path.Push(x);
-        path.Push(s);
+    public List<int> directedPathTo(Vertex v) {
+        if (!hasDirected(v)) return null;
+        List<int> path = new List<int>();
+        for (int x = v.index; x != s; x = directEdgeTo[x])
+            path.Add(x);
+        path.Add(s);
         return path;
     }
 }

@@ -32,4 +32,7 @@ public class Node {
         }
     }
     private GameObject nodeObj;
+    public void InitGameObj(GameObject obj) {
+        nodeObj = obj;
+    }
 }

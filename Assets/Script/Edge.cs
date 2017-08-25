@@ -7,6 +7,8 @@ public class Edge{//电子元器件相当于加权边，有两个节点
     private Node w;//另一个节点
     private float resistance;//电阻
     private float voltage;//电压
+    public string name;
+
     public Edge(Node v, Node w)
     {
         this.v = v;
@@ -30,9 +32,9 @@ public class Edge{//电子元器件相当于加权边，有两个节点
         w = j;
     }
 
-    public string toString()
+    public override string ToString()
     {
-        string s = v + " to " + w + ", weight: ";
+        string s = v.index + " to " + w.index ;
         return s;
     }
     public float Resistance {

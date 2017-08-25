@@ -36,7 +36,7 @@ public class DirectGraph {//电流图
         if (!vertexArray.ContainsKey(vertex.index))
         {
             vertexArray.Add(vertex.index, vertex);
-            //Debug.Log("添加节点:"+vertex.index);
+            Debug.Log("添加电路节点:"+vertex.index);
         }
         else {
             Debug.LogError("字典重复"+vertex.index);
@@ -56,9 +56,9 @@ public class DirectGraph {//电流图
             vertexArray[e.getFrom().index].adj.Add(e);
         }
        
-       // CheckCircle();
+        CheckCircle();
         edgeCount++;
-        //Debug.Log("添加边:节点" + e.getFrom().index + "————>节点" + e.getTo().index);
+        Debug.Log("添加电流边:节点" + e.getFrom().index + "————>节点" + e.getTo().index);
         //Debug.Log(toString());
     }
     
@@ -170,7 +170,7 @@ public class DirectGraph {//电流图
                     //输出环中顶点  
                     for (int j = t; j <= top; j++)
                     {
-                        outstr+= vertexArray[stack[j]].index;
+                        outstr+= vertexArray[stack[j]].index+"————>";
                         circle.Add(vertexArray[stack[j]]);
                     }
                     outstr+="\n";
@@ -183,7 +183,7 @@ public class DirectGraph {//电流图
         top--;
         inStack[x] = false;
     }
-    public string toString()
+    public override string ToString()
     {
         string s = vertexCount + " 个顶点, " + edgeCount + " 条边\n";
         for (int i = 0; i < vertexCount; i++)

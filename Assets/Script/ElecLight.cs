@@ -17,7 +17,6 @@ public class ElecLight : Element {
     }
     private bool turnOn=false;
     public void InitLight() {
-        InitEleType(ElementType.Light);
         elecLight = EleObj.GetComponentInChildren<Light>();
         TurnLight(false);
         SetResistance(5);

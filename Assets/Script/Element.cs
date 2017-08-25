@@ -65,14 +65,23 @@ public class Element{//电子元器件基类
             insideEdge = value;
         }
     }
-    public Node Point1 {
+    public Node startPoint {
         get {
+            if (point1 == null)
+                Debug.LogError("节点为空");
+            
             return point1;
+        }set {
+            if (point1 == null)
+                Debug.LogError("设置空节点");
+            point1 = value;
         }
     }
-    public Node Point2 {
+    public Node endPoint {
         get {
             return point2;
+        }set {
+            point2 = value;
         }
     }
     public GameObject StartVertexObj
@@ -127,7 +136,9 @@ public class Element{//电子元器件基类
         this.pos = copyEle.Pos;
         this.negative = copyEle.Negative;
         this.elementType = copyEle.thisType;
-        
+        this.point1 =copyEle.startPoint;
+        this.point2 =copyEle.endPoint;
+        this.insideEdge = copyEle.LineEdge;
     }
     public void Init(GameObject obj,int i)
     {
@@ -154,48 +165,58 @@ public class Element{//电子元器件基类
         elementType = initType;
         if (initType != ElementType.Line)
         {
-            Debug.Log("加入顶点");
-            pos = new Vertex(GenrateIndex.Instance.Index);
-            negative = new Vertex(GenrateIndex.Instance.Index);
-            point1 = new Node(pos.index);
-            point2 = new Node(negative.index);
-            electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
+           
+            point1 = new Node(GenrateIndex.Instance.Index);
+            point2 = new Node(GenrateIndex.Instance.Index);
+            pos = new Vertex(point1.index);
+            negative = new Vertex(point2.index);
+            if (initType != ElementType.Battery)
+            {
+                electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
+            }
+            else {
+                electryElement = new ElecEdge(negative, pos);
+            }
             electryElement.Resistance = 0;
             electryElement.name = name;
-            insideEdge = new Edge(point1, point2); 
+            insideEdge = new Edge(point1, point2);
+            //Debug.Log(insideEdge);
+            insideEdge.name = name;
         }
         else {
-            pos = new Vertex();
-            negative = new Vertex();
+            //pos = new Vertex();
+            //negative = new Vertex();
             point1 = new Node();
             point2 = new Node();
         }
         
         if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))
         {
-            StartVertexObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
+            startVertexObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
         }
         else
         {
-            StartVertexObj = new GameObject();
-            StartVertexObj.transform.SetParent(eleObj.transform);
-            StartVertexObj.name = ResourceTool.STARTPOINT;
+            startVertexObj = new GameObject();
+            startVertexObj.transform.SetParent(eleObj.transform);
+            startVertexObj.name = ResourceTool.STARTPOINT;
         }
         if (eleObj.transform.FindChild(ResourceTool.ENDPOINT))
         {
-            EndVertexObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
+            endVertexObj = eleObj.transform.FindChild(ResourceTool.ENDPOINT).gameObject;
         }
         else
         {
-            EndVertexObj = new GameObject();
-            EndVertexObj.transform.SetParent(eleObj.transform);
-            EndVertexObj.name = ResourceTool.ENDPOINT;
+            endVertexObj = new GameObject();
+            endVertexObj.transform.SetParent(eleObj.transform);
+            endVertexObj.name = ResourceTool.ENDPOINT;
         }
         if (initType != ElementType.Line)
         {
-            StartVertexObj.name = ResourceTool.STARTPOINT + pos.index;
-            EndVertexObj.name = ResourceTool.ENDPOINT + negative.index;
+            startVertexObj.name = ResourceTool.STARTPOINT + pos.index;
+            endVertexObj.name = ResourceTool.ENDPOINT + negative.index;
         }
+        point1.InitGameObj(startVertexObj);
+        point2.InitGameObj(endVertexObj);
     }
     public void SetPoint(Vector3 start, Vector3 end)
     {
@@ -236,5 +257,9 @@ public class Element{//电子元器件基类
         }set {
             negative = value;
         }
+    }
+    public override string ToString()
+    {
+        return point1.index+" " + point2.index;
     }
 }

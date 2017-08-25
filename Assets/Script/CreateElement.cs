@@ -63,17 +63,15 @@ public class CreateElement {
                 Battery battery = new Battery(ele);
                 battery.InitBattery(10);
                 batteryList.Add(new KeyValuePair<string, Battery>(battery.name,battery));
-                electryGraph.addVertex(ele.Pos);
-                electryGraph.addVertex(ele.Negative);
-                electryGraph.addEdge(ele.ElectryEdge);
                 electryGraph.SetBattery(ele.ElectryEdge);
+                lineGraph.setBattery(battery);
                 ele = battery;
                 break;
             case ElementType.Light:
                 ElecLight elecLight = new ElecLight(ele);
+                elecLight.InitLight();
                 ele = elecLight;
                 lightList.Add(new KeyValuePair<string, ElecLight>(elecLight.name, elecLight));
-                elecLight.InitLight();
                 break;
             case ElementType.Switch:
                 EleSwitch eleSwitch = new EleSwitch(ele);
@@ -85,7 +83,25 @@ public class CreateElement {
                 resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
                 break;
         }
-        
+        if (createType != ElementType.Line)
+        {
+            lineGraph.addVertex(ele.startPoint);
+            lineGraph.addVertex(ele.endPoint);
+            lineGraph.addEdge(ele.LineEdge);
+            electryGraph.addVertex(ele.Pos);
+            electryGraph.addVertex(ele.Negative);
+            electryGraph.addEdge(ele.ElectryEdge);
+        }
+        LineCircle c = new LineCircle(lineGraph);
+        Debug.Log(c.HasCycle);
+        if (c.HasCycle)
+        {
+            Debug.Log(ropeList.Count);
+            foreach (KeyValuePair<string, Rope> rope in ropeList)
+            {
+                rope.Value.LinkElectryEdge();
+            }
+        }
         Ele = ele;
         elementList.Add(ele.name, ele);
     }
@@ -93,13 +109,13 @@ public class CreateElement {
     public Node GetPoint(string name)
     {
         foreach(KeyValuePair<string,Element>item in elementList) {
-            if (item.Value.Point1.name == name)
+            if (item.Value.startPoint.name == name)
             {
-                return item.Value.Point1;
+                return item.Value.startPoint;
             }
-            if (item.Value.Point2.name == name)
+            if (item.Value.endPoint.name == name)
             {
-                return item.Value.Point2;
+                return item.Value.endPoint;
             }
         }
         return null;
@@ -164,7 +180,7 @@ public class CreateElement {
         }
         return null;
     }
- 
+    
 
     public void OnDestory() {
         elementList.Clear();

@@ -8,6 +8,7 @@ public class LineCircle {
     private int[] edgeTo; // 记录路径  
     private bool[] inStack;
     private StringBuilder sb;
+    private bool hasCicle = false;
     public LineCircle(LineGraph G)
     {
         visited = new bool[G.VertexCount];
@@ -37,18 +38,25 @@ public class LineCircle {
             if (!visited[nodeValue])
             {
                 edgeTo[nodeValue] = i;
+                
                 DFS(G, nodeValue);
             }
             else if(inStack[nodeValue])
             {
-                for (int j = i; j != nodeValue; j = edgeTo[j])
-                {
-                    sb.Append(G.getVertex(j).index + "----->");
-                }
-                sb.Append(nodeValue + "\n");
+                //for (int j = i; j != nodeValue; j = edgeTo[j])
+                //{
+                //    sb.Append(G.getVertex(j).index + "----->");
+                //}
+                hasCicle = true;
+               // sb.Append(nodeValue + "——————》");
             }
         }
-        
+        sb.Append("\n");
+    }
+    public bool HasCycle {
+        get {
+            return hasCicle;
+        }
     }
     public override string ToString()
     {

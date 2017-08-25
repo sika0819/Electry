@@ -42,10 +42,6 @@ public class RopePoint : MonoBehaviour {
             {
                 transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                 ropeController.Regenerate(false);
-                if (rope.IsLinked) {
-                    
-                    Debug.Log("bling~连接");
-                }
                 isLink = false;
             }
 
@@ -65,13 +61,25 @@ public class RopePoint : MonoBehaviour {
             if (!isLink)
             {
                 linkObj = coli.gameObject;
+                Debug.Log(linkObj.name);
                 Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;
                 //  Debug.Log("bling~连接");
                 isLink = true;
                 linkedPoint = linkPoint;
-                rope.linkNode = linkedPoint;
+                if (name == ResourceTool.STARTPOINT) {
+                    rope.startPoint = linkedPoint;
+                    rope.LinkObj1 = linkObj;
+                }
+                if (name == ResourceTool.ENDPOINT) {
+                    rope.endPoint = linkedPoint;
+                    rope.LinkObj2 = linkObj;
+                }
+
+                if (rope.CanLink) {
+                    rope.Link(rope.startPoint, rope.endPoint);
+                }
             }
         }
     }
