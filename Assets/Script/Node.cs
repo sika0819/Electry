@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Node {
-   
+    public string parentName {
+        get {
+            return nodeObj.transform.parent.name;
+        }
+    }
     private int i;//序号
     public int index
     {
@@ -34,5 +38,14 @@ public class Node {
     private GameObject nodeObj;
     public void InitGameObj(GameObject obj) {
         nodeObj = obj;
+    }
+    public bool hasPathTo(int v)
+    {
+        foreach (Edge e in adj)
+        {
+            if ((e.either().index == v)||e.other(e.either()).index==v)
+                return true;
+        }
+        return false;
     }
 }

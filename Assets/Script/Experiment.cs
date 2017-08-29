@@ -24,6 +24,7 @@ public class Experiment : MonoBehaviour {
     Camera expCamera;
     public Shader outlineShader;
     public Shader defaultShader;
+    Text informText;
     Vector3 hitPos;
     // Use this for initialization
     void Start () {
@@ -36,6 +37,8 @@ public class Experiment : MonoBehaviour {
             EventTriggerListener.Get(expButtonsObj[iLoop]).onSelect = OnCreate;
         }
         expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
+        informText = GameObject.Find(ResourceTool.INFORM_TEXT).GetComponent<Text>();
+        CreateElement.Instance.SetInformBox(informText);
 	}
 
     private void OnCreate(GameObject go)
@@ -59,9 +62,12 @@ public class Experiment : MonoBehaviour {
                 break;
         }
         createdElement=CreateElement.Instance.Ele;
-        Material mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
-        defaultShader = mat.shader;
-        isMove = true;
+        if (createdElement != null)
+        {
+            Material mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
+            defaultShader = mat.shader;
+            isMove = true;
+        }
         
     }
 
@@ -86,12 +92,17 @@ public class Experiment : MonoBehaviour {
                 if (isEnterArea&&Input.GetMouseButtonDown(0))
                 {
                     createdElement = CreateElement.Instance.GetElement(hit.collider.name);
+                    if (createdElement.EleType == ElementType.Switch) {
+                        Debug.Log(createdElement.name);
+                        EleSwitch seleSwitch= CreateElement.Instance.GetSwitch(createdElement.name);
+                        seleSwitch.ToggleTurn();
+                    }
                     isMove = true;
                 }
             }
            
         }
-        CreateElement.Instance.UpdateElectry();
+        CreateElement.Instance.Update();
     }
     public void OnPointerEnter() {
         isEnterArea = true;

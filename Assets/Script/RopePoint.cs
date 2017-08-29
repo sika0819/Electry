@@ -30,24 +30,38 @@ public class RopePoint : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
         if (isLink) {
             if(linkObj!=null)
             transform.position = linkObj.transform.position;
         }
         if (isMove)
         {
-            Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
                 transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                 ropeController.Regenerate(false);
-                isLink = false;
+               // isLink = false;
             }
 
         }
         if (Input.GetMouseButtonUp(0)) {
             isMove = false;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            CreateElement.Instance.ShowInform = "右键取消连接";
+            if (Physics.Raycast(ray, out hit))
+            {
+                CreateElement.Instance.ShowInform = "线连接模式，当前选中为：" + hit.collider.name;
+                if (hit.collider.name == gameObject.name) {
+                    linkObj = null;
+                    rope.RemoveLink(rope.startPoint, rope.endPoint);
+                    isLink =false;
+                    isMove = true;
+                }
+            }
         }
 	}
     void OnMouseDown() {
@@ -56,12 +70,12 @@ public class RopePoint : MonoBehaviour {
     void OnTriggerEnter(Collider coli)
     {
         
-        if (coli.tag == "Point" && coli.gameObject.transform.parent != transform.parent)
+        if (coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent)
         {
             if (!isLink)
             {
                 linkObj = coli.gameObject;
-                Debug.Log(linkObj.name);
+              //  Debug.Log(linkObj.name);
                 Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;
@@ -79,6 +93,7 @@ public class RopePoint : MonoBehaviour {
 
                 if (rope.CanLink) {
                     rope.Link(rope.startPoint, rope.endPoint);
+                    rope.LinkElectryEdge();
                 }
             }
         }

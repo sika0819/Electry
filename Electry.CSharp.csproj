@@ -90,6 +90,7 @@
     <Compile Include="Assets\Script\LineCircle.cs" />
     <Compile Include="Assets\Script\LineGraph.cs" />
     <Compile Include="Assets\Script\MainController.cs" />
+    <Compile Include="Assets\Script\MyCircle.cs" />
     <Compile Include="Assets\Script\Node.cs" />
     <Compile Include="Assets\Script\ResourceTool.cs" />
     <Compile Include="Assets\Script\Rope.cs" />

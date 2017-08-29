@@ -12,7 +12,16 @@ public class DirectGraph {//电流图
     }
     private int edgeCount; // 边的数目  
 
-    public List<List<Vertex>> circlelist;
+    private List<List<Vertex>> circlelist;
+    public int CircleCount {
+        get {
+            return circlelist.Count;
+        }
+    }
+    public List<Vertex> getCircle(int index)
+    {
+        return circlelist[index];
+    }
     static int w = 0;
     public DirectGraph()
     {
@@ -27,7 +36,6 @@ public class DirectGraph {//电流图
         this.battery = battery;
         addVertex(battery.getFrom());
         addVertex(battery.getTo());
-        addEdge(battery);
     }
     public void SetBattery(ElecEdge battery) {
         this.battery = battery;
@@ -36,7 +44,7 @@ public class DirectGraph {//电流图
         if (!vertexArray.ContainsKey(vertex.index))
         {
             vertexArray.Add(vertex.index, vertex);
-            Debug.Log("添加电路节点:"+vertex.index);
+            //Debug.Log("添加电路节点:"+vertex.index);
         }
         else {
             Debug.LogError("字典重复"+vertex.index);
@@ -46,7 +54,10 @@ public class DirectGraph {//电流图
     {
         if (vertexArray.ContainsKey(e.getFrom().index))
         {
-            vertexArray[e.getFrom().index].adj.Add(e);
+            if (!vertexArray[e.getFrom().index].adj.Contains(e))
+            {
+                vertexArray[e.getFrom().index].adj.Add(e);
+            }
         }
         else
         {
@@ -55,13 +66,17 @@ public class DirectGraph {//电流图
                 addVertex(e.getTo());
             vertexArray[e.getFrom().index].adj.Add(e);
         }
-       
-        CheckCircle();
+
         edgeCount++;
         Debug.Log("添加电流边:节点" + e.getFrom().index + "————>节点" + e.getTo().index);
-        //Debug.Log(toString());
+        CheckCircle();
+        Debug.Log(ToString());
     }
-    
+    public void addEdge(Vertex from, Vertex to)
+    {
+        ElecEdge e = new ElecEdge(from, to);
+        addEdge(e);
+    }
     public void addEdge(int from, int to) {
         ElecEdge e = new ElecEdge(vertexArray[from], vertexArray[to]);
         addEdge(e);
@@ -91,21 +106,28 @@ public class DirectGraph {//电流图
    
     public List<ElecEdge> getAdj(int v)
     {
-        return vertexArray[v].adj;
+        if (vertexArray.Count > v)
+        {
+            return vertexArray[v].adj;
+        }
+        return null;
     }
     public int outdegree(int v)
     {
         getVertex(v);
         return getAdj(v).Count;
     }
-    public List<List<ElecEdge>> Edges
+    public List<ElecEdge> Edges
     {
         get
         {
-            List<List<ElecEdge>> edges = new List<List<ElecEdge>>();
+            List<ElecEdge> edges = new List<ElecEdge>();
             for (int i = 0; i < vertexCount; i++)
             {
-                edges.Add(getAdj(i));
+                for (int j = 0; j < getAdj(i).Count; j++)
+                {
+                    edges.Add(getAdj(i)[j]);
+                }
             }
             return edges;
         }
@@ -150,6 +172,7 @@ public class DirectGraph {//电流图
         stack[++top] = x;
         inStack[x] = true;
         string outstr;
+        circlelist = new List<List<Vertex>>();
         for (int i = 0; i < vertexCount; i++)
         {
             if (AdjMatrix[x][i] != 0)//有边  
@@ -176,6 +199,7 @@ public class DirectGraph {//电流图
                     outstr+="\n";
                     circlelist.Add(circle);
                     Debug.Log(outstr);
+                   // Debug.Log(ToString());
                 }
             }
         }
@@ -192,12 +216,13 @@ public class DirectGraph {//电流图
             for (int j = 0; j < vertexArray[i].adj.Count; j++)
             {
                 ElecEdge e = vertexArray[i].adj[j];
-                s += "电子元器件："+e.name+" 电压["+e.Voltage+"] 电流["+e.Electry+"] 电阻:["+e.Resistance+"]";
+                s += "电子元器件："+e.name+" 节点"+e.getFrom().index+"——>节点"+e.getTo().index+" 电压["+e.Voltage+"] 电流["+e.Electry+"] 电阻:["+e.Resistance+"]";
             }
             s += "\n";
         }
         return s;
     }
+
     public DirectGraph reverse()
     {
         DirectGraph R = new DirectGraph();
@@ -223,13 +248,57 @@ public class DirectGraph {//电流图
     }
     public bool isLinkToBattery(List<Vertex> circle) {
         for (int i = 0; i < circle.Count - 1; i++) {
-            if (circle[i].index == battery.getFrom().index && circle[i + 1].index == battery.getTo().index)
+            if (battery != null)
             {
-                return true;
+               // Debug.Log("电池："+battery.getFrom().index +"——>"+ battery.getTo().index+"\n"
+                //    + circle[i].index + "——>" + circle[i + 1].index);
+                if ((circle[i].index == battery.getFrom().index && circle[i + 1].index == battery.getTo().index)
+                    ||(circle[circle.Count- 1].index == battery.getFrom().index&& (circle[0].index == battery.getTo().index)))
+                {
+                    return true;
+                }
             }
         }
         Debug.LogError("该线路没有与电池连接！！");
         return false;
     }
-    
+    public void GenerateChuanLian()
+    {
+        if (isLinkToBattery(circlelist[0]))
+        {
+            float allResistance = 0;
+            for (int i = 0; i < circlelist[0].Count; i++)
+            {
+                for (int j = 0; j < getAdj(i).Count; j++)
+                {
+                    allResistance += getAdj(i)[j].Resistance;
+                }
+            }
+            float allElectry = allVoltage / allResistance;
+            //Debug.Log("电阻："+allResistance+" 电压:"+allVoltage+" 电流:"+allElectry);
+            for (int i = 0; i < circlelist[0].Count; i++)
+            {
+                for (int j = 0; j < getAdj(i).Count; j++)
+                {
+                    getAdj(i)[j].Electry = allElectry;
+                   // Debug.Log(getAdj(i)[j].name);
+                    Element nowElement= CreateElement.Instance.GetElement(getAdj(i)[j].name);
+                    switch (nowElement.EleType) {
+                        case ElementType.Light:
+                            ElecLight light = CreateElement.Instance.GetEleLight(getAdj(i)[j].name);
+                            light.Electry();
+                            break;
+                        default:
+                            nowElement.Electry();
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    public float allVoltage {
+        get {
+            return battery.Voltage;
+        }
+    }
 }

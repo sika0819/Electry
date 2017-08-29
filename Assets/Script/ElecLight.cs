@@ -21,15 +21,7 @@ public class ElecLight : Element {
         TurnLight(false);
         SetResistance(5);
     }
-    void JudgeLight() {
-        if (isTurnOn)
-        {
-            TurnLight(true);
-        }
-        else {
-            TurnLight(false);
-        }
-    }
+    
     public void TurnLight(bool isOn) {
         if(elecLight!=null)
         elecLight.enabled = isOn;
@@ -37,7 +29,10 @@ public class ElecLight : Element {
     }
     public override void Electry()
     {
+        //Debug.Log("电灯泡当前电流为："+Currency);
         base.Electry();
-        JudgeLight();
+        if (Currency > 0) {
+            isTurnOn = true;
+        }
     }
 }

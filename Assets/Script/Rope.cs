@@ -43,12 +43,21 @@ public class Rope : Element {
         if (!HasEdge&&node1!=null&&node2!=null)
         {
             LineEdge = new Edge(node1, node2);
-            CreateElement.Instance.lineGraph.addEdge(LineEdge);
         }
         else {
             CreateElement.Instance.lineGraph.removeEdge(LineEdge);
             LineEdge = new Edge(node1, node2);
-            CreateElement.Instance.lineGraph.addEdge(LineEdge);
+            
+        }
+        LineEdge.name = name;
+        CreateElement.Instance.lineGraph.addEdge(LineEdge);
+    }
+    public void RemoveLink(Node node1, Node node2)
+    {
+        if (!HasEdge && node1 != null && node2 != null)
+        {
+            CreateElement.Instance.lineGraph.removeEdge(LineEdge);
+            LineEdge = null;
         }
     }
     public void Link()
@@ -60,26 +69,13 @@ public class Rope : Element {
         if (Pos != null && Negative != null)
         {
             ElectryEdge = new ElecEdge(Pos, Negative);
-            CreateElement.Instance.electryGraph.addEdge(ElectryEdge);
         }
         
     }
     public void LinkElectryEdge() {
-        Debug.Log(startPoint.name);
-        Debug.Log(endPoint.name);
-        DirectedDFS dfs = new DirectedDFS(CreateElement.Instance.lineGraph, startPoint);
-        Element link1 = CreateElement.Instance.GetElement(startPoint.NodeObj.transform.parent.name);
-        Element link2 = CreateElement.Instance.GetElement(endPoint.NodeObj.transform.parent.name);
-        if (link1 != null && link2 != null)
-        {
-            Debug.Log(link1.name);
-            Debug.Log(link2.name);
-            if (dfs.hasPathTo(CreateElement.Instance.lineGraph.battery.startPoint))
-            {
-                Debug.Log("绳子一端连接电池");
-            }
-        }
-        Link();
+        //Debug.Log(startPoint.name);
+        //Debug.Log(endPoint.name);
+        CreateElement.Instance.GenerateDirectedGraph();
     }
     public bool IsLinked{
         get {
@@ -92,4 +88,5 @@ public class Rope : Element {
             return  LinkObj1!= null&&LinkObj2!=null;
         }
     }
+    
 }

@@ -31,11 +31,21 @@ public class Element{//电子元器件基类
     {
         get
         {
-            return electryElement.Resistance;
+            if (electryElement != null)
+            {
+                return electryElement.Resistance;
+            }
+            else {
+                return 0;
+            }
         }
         set
         {
-            electryElement.Resistance = value;
+            if (electryElement != null)
+            {
+               // Debug.Log("将"+name+"的电阻设为："+value);
+                electryElement.Resistance = value;
+            }
         }
     }
     public GameObject EleObj//电子元器件物体
@@ -135,21 +145,22 @@ public class Element{//电子元器件基类
         this.electryElement = copyEle.ElectryEdge;
         this.pos = copyEle.Pos;
         this.negative = copyEle.Negative;
-        this.elementType = copyEle.thisType;
+        this.elementType = copyEle.EleType;
         this.point1 =copyEle.startPoint;
         this.point2 =copyEle.endPoint;
         this.insideEdge = copyEle.LineEdge;
+        this.electryElement = copyEle.ElectryEdge;
+        this.Resistance = copyEle.Resistance;
     }
     public void Init(GameObject obj,int i)
     {
         eleObj = ResourceTool.InstitateGameObject(obj);
         eleObj.name = obj.name + i;
         eleObj.transform.SetParent(consoleArea.transform);
-        
     }
 
     public virtual void Electry() {
-
+        //Debug.Log("电流："+Currency+" 电阻："+Resistance+" 电压:"+Voltage);
     }
     public void setCurrency(float current) {//设置电流
         pos.setElectry(current);
@@ -159,6 +170,12 @@ public class Element{//电子元器件基类
    
     public void SetResistance(float value) {
         Resistance = value;
+        if (ElectryEdge != null) {
+            ElectryEdge.Resistance = value;
+        }
+        if (insideEdge != null) {
+            insideEdge.Resistance = value;
+        }
     }
     public void InitEleType(ElementType initType)
     {
@@ -235,11 +252,18 @@ public class Element{//电子元器件基类
     {
         eleObj = go;
     }
-    public void SetVoltage(float v)
+    public float Voltage {
+        get {
+            return electryElement.Voltage;
+        }set {
+            SetVoltage(value);
+        }
+    }
+    void SetVoltage(float v)
     {
         electryElement.Voltage = v;
     }
-    public ElementType thisType {
+    public ElementType EleType {
         get {
             return elementType;
         }
