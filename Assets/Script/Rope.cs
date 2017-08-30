@@ -11,11 +11,7 @@ public class Rope : Element {
             return LineEdge != null;
         }
     }
-    bool HasElectryEdge {
-        get {
-            return ElectryEdge != null;
-        }
-    }
+   
     int i = 0;
     public Rope() {
 
@@ -60,23 +56,7 @@ public class Rope : Element {
             LineEdge = null;
         }
     }
-    public void Link()
-    {
-        if (HasElectryEdge)
-        {
-            CreateElement.Instance.electryGraph.removeEdge(ElectryEdge);
-        }
-        if (Pos != null && Negative != null)
-        {
-            ElectryEdge = new ElecEdge(Pos, Negative);
-        }
-        
-    }
-    public void LinkElectryEdge() {
-        //Debug.Log(startPoint.name);
-        //Debug.Log(endPoint.name);
-        CreateElement.Instance.GenerateDirectedGraph();
-    }
+    
     public bool IsLinked{
         get {
             bool linked = Pos != null && Negative != null;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Element{//电子元器件基类
-    private ElecEdge electryElement;//边节点
+    //private ElecEdge electryElement;//边节点
     private Vertex pos;//正极点
     private Vertex negative;//负极点
     private Edge insideEdge;
@@ -20,6 +20,7 @@ public class Element{//电子元器件基类
             return eleObj.name;
         }
     }
+   
     public float Currency
     {
         get
@@ -31,9 +32,9 @@ public class Element{//电子元器件基类
     {
         get
         {
-            if (electryElement != null)
+            if (insideEdge != null)
             {
-                return electryElement.Resistance;
+                return insideEdge.Resistance;
             }
             else {
                 return 0;
@@ -41,10 +42,10 @@ public class Element{//电子元器件基类
         }
         set
         {
-            if (electryElement != null)
+            if (insideEdge != null)
             {
                // Debug.Log("将"+name+"的电阻设为："+value);
-                electryElement.Resistance = value;
+                insideEdge.Resistance = value;
             }
         }
     }
@@ -59,15 +60,15 @@ public class Element{//电子元器件基类
             eleObj = value;
         }
     }
-    public ElecEdge ElectryEdge
-    {//返回元器件
-        get
-        {
-            return electryElement;
-        }set {
-            electryElement = value;
-        }
-    }
+    //public ElecEdge ElectryEdge
+    //{//返回元器件
+    //    get
+    //    {
+    //        return electryElement;
+    //    }set {
+    //        electryElement = value;
+    //    }
+    //}
     public Edge LineEdge {
         get {
             return insideEdge;
@@ -142,14 +143,14 @@ public class Element{//电子元器件基类
     }
     public void Init(Element copyEle) {
         this.eleObj = copyEle.EleObj;
-        this.electryElement = copyEle.ElectryEdge;
+       // this.electryElement = copyEle.ElectryEdge;
         this.pos = copyEle.Pos;
         this.negative = copyEle.Negative;
         this.elementType = copyEle.EleType;
         this.point1 =copyEle.startPoint;
         this.point2 =copyEle.endPoint;
         this.insideEdge = copyEle.LineEdge;
-        this.electryElement = copyEle.ElectryEdge;
+       // this.electryElement = copyEle.ElectryEdge;
         this.Resistance = copyEle.Resistance;
     }
     public void Init(GameObject obj,int i)
@@ -170,9 +171,9 @@ public class Element{//电子元器件基类
    
     public void SetResistance(float value) {
         Resistance = value;
-        if (ElectryEdge != null) {
-            ElectryEdge.Resistance = value;
-        }
+        //if (ElectryEdge != null) {
+        //    ElectryEdge.Resistance = value;
+        //}
         if (insideEdge != null) {
             insideEdge.Resistance = value;
         }
@@ -187,16 +188,8 @@ public class Element{//电子元器件基类
             point2 = new Node(GenrateIndex.Instance.Index);
             pos = new Vertex(point1.index);
             negative = new Vertex(point2.index);
-            if (initType != ElementType.Battery)
-            {
-                electryElement = new ElecEdge(pos, negative);//从正极到负极建立一个有向边
-            }
-            else {
-                electryElement = new ElecEdge(negative, pos);
-            }
-            electryElement.Resistance = 0;
-            electryElement.name = name;
             insideEdge = new Edge(point1, point2);
+            insideEdge.Resistance = 0;
             //Debug.Log(insideEdge);
             insideEdge.name = name;
         }
@@ -254,14 +247,19 @@ public class Element{//电子元器件基类
     }
     public float Voltage {
         get {
-            return electryElement.Voltage;
+            if(insideEdge!=null)
+            return insideEdge.Voltage;
+            return 0;
         }set {
             SetVoltage(value);
         }
     }
     void SetVoltage(float v)
     {
-        electryElement.Voltage = v;
+        if(insideEdge!=null)
+            insideEdge.Voltage = v;
+        //if(electryElement!=null)
+        //    electryElement.Voltage = v;
     }
     public ElementType EleType {
         get {

@@ -29,9 +29,9 @@ public class ElecLight : Element {
     }
     public override void Electry()
     {
-        //Debug.Log("电灯泡当前电流为："+Currency);
-        base.Electry();
+        Debug.Log("电灯泡当前电流为："+Currency);
         if (Currency > 0) {
+          //  CreateElement.Instance.ShowInform = "灯泡连接成功，发光中";
             isTurnOn = true;
         }
     }

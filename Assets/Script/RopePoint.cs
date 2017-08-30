@@ -42,7 +42,6 @@ public class RopePoint : MonoBehaviour {
             {
                 transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                 ropeController.Regenerate(false);
-               // isLink = false;
             }
 
         }
@@ -70,7 +69,7 @@ public class RopePoint : MonoBehaviour {
     void OnTriggerEnter(Collider coli)
     {
         
-        if (coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent)
+        if (coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent&&(!coli.transform.parent.name.Contains(ResourceTool.ROPE)))
         {
             if (!isLink)
             {
@@ -84,16 +83,17 @@ public class RopePoint : MonoBehaviour {
                 linkedPoint = linkPoint;
                 if (name == ResourceTool.STARTPOINT) {
                     rope.startPoint = linkedPoint;
+    
                     rope.LinkObj1 = linkObj;
                 }
                 if (name == ResourceTool.ENDPOINT) {
                     rope.endPoint = linkedPoint;
+                    
                     rope.LinkObj2 = linkObj;
                 }
 
                 if (rope.CanLink) {
                     rope.Link(rope.startPoint, rope.endPoint);
-                    rope.LinkElectryEdge();
                 }
             }
         }

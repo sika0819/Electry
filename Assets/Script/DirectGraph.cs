@@ -33,6 +33,7 @@ public class DirectGraph {//电流图
     {
         edgeCount = 0;
         vertexArray = new Dictionary<int, Vertex>();
+        circlelist = new List<List<Vertex>>();
         this.battery = battery;
         addVertex(battery.getFrom());
         addVertex(battery.getTo());
@@ -158,6 +159,7 @@ public class DirectGraph {//电流图
         int[] stack=new int[vertexCount];
         bool[] inStack = new bool[vertexCount];
         bool[] visited = new bool[vertexCount];
+        circlelist = new List<List<Vertex>>();
         for (int i = 0; i < vertexCount; i++)
         {
             if (!visited[i])
@@ -165,14 +167,14 @@ public class DirectGraph {//电流图
                 DFS(i, visited, stack,ref top, inStack,ref count);
             }
         }
+        Debug.Log(outCircle());
     }
     void DFS(int x, bool[] visited, int[] stack, ref int top, bool[] inStack, ref int count)
     {
         visited[x] = true;
         stack[++top] = x;
         inStack[x] = true;
-        string outstr;
-        circlelist = new List<List<Vertex>>();
+       
         for (int i = 0; i < vertexCount; i++)
         {
             if (AdjMatrix[x][i] != 0)//有边  
@@ -184,7 +186,6 @@ public class DirectGraph {//电流图
                 else //条件成立，表示下标为x的顶点到 下标为i的顶点有环  
                 {
                     count++;
-                    outstr = "第" + count + "环为:";
                     List<Vertex> circle=new List<Vertex>();//环
                     //从i到x是一个环，top的位置是x，下标为i的顶点在栈中的位置要寻找一下  
                     //寻找起始顶点下标在栈中的位置  
@@ -193,13 +194,9 @@ public class DirectGraph {//电流图
                     //输出环中顶点  
                     for (int j = t; j <= top; j++)
                     {
-                        outstr+= vertexArray[stack[j]].index+"————>";
                         circle.Add(vertexArray[stack[j]]);
                     }
-                    outstr+="\n";
                     circlelist.Add(circle);
-                    Debug.Log(outstr);
-                   // Debug.Log(ToString());
                 }
             }
         }
@@ -222,7 +219,17 @@ public class DirectGraph {//电流图
         }
         return s;
     }
-
+    public string outCircle() {
+        string circleResult = "有"+circlelist.Count+"个环\n";
+        for (int i = 0; i < circlelist.Count; i++) {
+            for (int j = 0; j < circlelist[i].Count; j++)
+            {
+                circleResult += "节点：" + circlelist[i][j].index+"——>";
+            }
+            circleResult += "\n";
+        }
+        return circleResult;
+    }
     public DirectGraph reverse()
     {
         DirectGraph R = new DirectGraph();
@@ -274,8 +281,9 @@ public class DirectGraph {//电流图
                     allResistance += getAdj(i)[j].Resistance;
                 }
             }
+            allResistance = allResistance / 2;
             float allElectry = allVoltage / allResistance;
-            //Debug.Log("电阻："+allResistance+" 电压:"+allVoltage+" 电流:"+allElectry);
+            Debug.Log("电阻："+allResistance+" 电压:"+allVoltage+" 电流:"+allElectry);
             for (int i = 0; i < circlelist[0].Count; i++)
             {
                 for (int j = 0; j < getAdj(i).Count; j++)
@@ -286,6 +294,7 @@ public class DirectGraph {//电流图
                     switch (nowElement.EleType) {
                         case ElementType.Light:
                             ElecLight light = CreateElement.Instance.GetEleLight(getAdj(i)[j].name);
+                            light.setCurrency(allElectry);
                             light.Electry();
                             break;
                         default:
@@ -299,6 +308,20 @@ public class DirectGraph {//电流图
     public float allVoltage {
         get {
             return battery.Voltage;
+        }
+    }
+    public bool ContainsEdge(ElecEdge e) {
+        bool returnValue = false;
+        for (int i = 0; i < Edges.Count-1; i++)
+        {
+            if (e.getFrom().index == Edges[i].getFrom().index && e.getTo().index == Edges[i].getTo().index)
+                returnValue = true;
+        }
+        return returnValue;
+    }
+    public List<List<Vertex>> CircleList {
+        get {
+            return circlelist;
         }
     }
 }

@@ -51,6 +51,14 @@ public class Edge{//电子元器件相当于加权边，有两个节点
             voltage = value;
         }
     }
+    float currency = 0;
+    public float Electry {
+        get {
+            return currency;
+        }set {
+            currency = value;
+        }
+    }
     public bool isEqual(Edge e) {
         bool equal = false;
         if (e.either().index==v.index&&e.other(v).index==w.index)

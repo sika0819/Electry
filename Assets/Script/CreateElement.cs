@@ -24,14 +24,12 @@ public class CreateElement {
     Text InformText;
     bool isChuanLian = false;
     public LineGraph lineGraph;
-    public DirectGraph electryGraph;
     public CreateElement() {
         ropeList = new List<KeyValuePair<string, Rope>>();
         resistanceList = new List<KeyValuePair<string, Element>>();
         lightList = new List<KeyValuePair<string, ElecLight>>();
         swicthList = new List<KeyValuePair<string, EleSwitch>>();
         lineGraph = new LineGraph();
-        electryGraph = new DirectGraph();
     }
     public static CreateElement Instance {
         get
@@ -120,8 +118,6 @@ public class CreateElement {
             lineGraph.addVertex(ele.startPoint);
             lineGraph.addVertex(ele.endPoint);
             lineGraph.addEdge(ele.LineEdge);
-            electryGraph.addVertex(ele.Pos);
-            electryGraph.addVertex(ele.Negative);
         }
         Ele = ele;
         if(ele!=null)
@@ -134,49 +130,36 @@ public class CreateElement {
         this.InformText = informBox;
     }
 
-    public void GenerateDirectedGraph() {
-        for (int i = 0; i <lineGraph.getHalfList().Count; i++)
+    public void Update(){//每帧更新
+        if (lineGraph.halfCircleCount > 0)
         {
-            for (int j = 0; j < lineGraph.getHalfList()[i].Count - 1; j++)
-            {
-                ElecEdge elecEdge=null;
-                Element ele1 = GetElement(lineGraph.getHalfList()[i][j].parentName);
-                elecEdge = new ElecEdge(electryGraph.getVertex(lineGraph.getHalfList()[i][j].index), electryGraph.getVertex(lineGraph.getHalfList()[i][j + 1].index));
-                Debug.Log(ele1.name +" 电压："+ ele1.Voltage +" 电流："+ ele1.Currency+"电阻："+ele1.Resistance);
-                if (ele1.ElectryEdge.getFrom().index == lineGraph.getHalfList()[i][j].index && ele1.ElectryEdge.getTo().index == lineGraph.getHalfList()[i][j + 1].index||
-                    ele1.ElectryEdge.getTo().index == lineGraph.getHalfList()[i][j].index && ele1.ElectryEdge.getFrom().index == lineGraph.getHalfList()[i][j + 1].index)
-                {
-                    elecEdge.Resistance = ele1.Resistance;
-                    elecEdge.Voltage = ele1.Voltage;
-                    ele1.ElectryEdge = elecEdge;
-                }
-                elecEdge.name = ele1.name;
-                electryGraph.addEdge(elecEdge);
-            }
-        }
-        electryGraph.SetBattery(lineGraph.battery.ElectryEdge);
-        if (electryGraph.CircleCount > 0)
-        {
-            if (electryGraph.CircleCount == 1)
+            if (lineGraph.halfCircleCount == 1&&lineGraph.isLinkToBattery(lineGraph.getHalfList()[0]))
             {
                 ShowInform = "连接成功，当前为串联";
                 GenerateChuanLian();
             }
             else
             {
-                ShowInform = "连接成功，当前为并联";
-
+                List<List<Node>> circle = lineGraph.getHalfList();
+                for (int i = 0; i < circle.Count; i++)
+                {
+                    if (lineGraph.isLinkToBattery(circle[i]))
+                    {
+                        ShowInform = "连接成功，当前为并联";
+                    }
+                }
             }
         }
-        else {
+        else
+        {
             ShowInform = "当前为断路！请连接电源";
         }
     }
-    public void Update(){//每帧更新
-        
-    }
     void GenerateChuanLian() {//串联只用讨论一行就可以了
-        electryGraph.GenerateChuanLian();
+        lineGraph.GenerateChuanLian();
+    }
+    void GenerateBingLian() {//计算并联电路
+
     }
     public Node GetPoint(string name)
     {
