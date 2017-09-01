@@ -64,43 +64,49 @@ public class Experiment : MonoBehaviour {
         createdElement=CreateElement.Instance.Ele;
         if (createdElement != null)
         {
-            Material mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
-            defaultShader = mat.shader;
+            //Material mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
+            //defaultShader = mat.shader;
             isMove = true;
         }
         
     }
 
-
+    RaycastHit hit;
     // Update is called once per frame
     void Update () {
         Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+       
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.tag == ResourceTool.GROUND)
+            if (isEnterArea && hit.collider.tag == ResourceTool.GROUND)
             {
                 hitPos = hit.point;
-                if (isEnterArea&&isMove && Input.GetMouseButton(0))
-                {
-                    if (createdElement != null)
-                        createdElement.SetPosition(hitPos);
-                }
             }
             else if(hit.collider.tag == ResourceTool.PREFAB)
             {
-                if (isEnterArea&&Input.GetMouseButtonDown(0))
+                if (isEnterArea&&Input.GetMouseButtonDown(0)&&createdElement==null)
                 {
                     createdElement = CreateElement.Instance.GetElement(hit.collider.name);
-                    if (createdElement.EleType == ElementType.Switch) {
-                        Debug.Log(createdElement.name);
-                        EleSwitch seleSwitch= CreateElement.Instance.GetSwitch(createdElement.name);
-                        seleSwitch.ToggleTurn();
+                    if (createdElement != null)
+                    {
+                        if (createdElement.EleType == ElementType.Switch)
+                        {
+                            Debug.Log(createdElement.name);
+                            EleSwitch seleSwitch = CreateElement.Instance.GetSwitch(createdElement.name);
+                            seleSwitch.ToggleTurn();
+                        }
                     }
                     isMove = true;
                 }
             }
            
+        }
+        if (isMove && Input.GetMouseButton(0))
+        {
+            if (createdElement != null)
+            {
+                createdElement.SetPosition(hitPos);
+            }
         }
         CreateElement.Instance.Update();
     }
@@ -108,11 +114,16 @@ public class Experiment : MonoBehaviour {
         isEnterArea = true;
     }
     public void OnPointerUp() {
-        createdElement = null;
-        isMove = false;
+        if (isEnterArea)
+        {
+            createdElement = null;
+            isMove = false;
+        }
     }
     public void OnPointExit() {
         isEnterArea = false;
+        createdElement = null;
+        isMove = false;
     }
     void OnApplicationQuit() {
         CreateElement.Instance.OnDestory();

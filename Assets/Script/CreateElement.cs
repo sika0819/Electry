@@ -22,7 +22,7 @@ public class CreateElement {
     List<KeyValuePair<string, Rope>> ropeList;
     static int createIndex=0;
     Text InformText;
-    bool isChuanLian = false;
+   
     public LineGraph lineGraph;
     public CreateElement() {
         ropeList = new List<KeyValuePair<string, Rope>>();
@@ -131,36 +131,10 @@ public class CreateElement {
     }
 
     public void Update(){//每帧更新
-        if (lineGraph.halfCircleCount > 0)
-        {
-            if (lineGraph.halfCircleCount == 1&&lineGraph.isLinkToBattery(lineGraph.getHalfList()[0]))
-            {
-                ShowInform = "连接成功，当前为串联";
-                GenerateChuanLian();
-            }
-            else
-            {
-                List<List<Node>> circle = lineGraph.getHalfList();
-                for (int i = 0; i < circle.Count; i++)
-                {
-                    if (lineGraph.isLinkToBattery(circle[i]))
-                    {
-                        ShowInform = "连接成功，当前为并联";
-                    }
-                }
-            }
-        }
-        else
-        {
-            ShowInform = "当前为断路！请连接电源";
-        }
+        
+        
     }
-    void GenerateChuanLian() {//串联只用讨论一行就可以了
-        lineGraph.GenerateChuanLian();
-    }
-    void GenerateBingLian() {//计算并联电路
-
-    }
+  
     public Node GetPoint(string name)
     {
         foreach(KeyValuePair<string,Element>item in elementList) {

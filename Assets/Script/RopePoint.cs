@@ -36,7 +36,7 @@ public class RopePoint : MonoBehaviour {
             if(linkObj!=null)
             transform.position = linkObj.transform.position;
         }
-        if (isMove)
+        if (!isLink&&isMove)
         {
             if (Physics.Raycast(ray, out hit))
             {
@@ -78,9 +78,10 @@ public class RopePoint : MonoBehaviour {
                 Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;
-                //  Debug.Log("bling~连接");
+
                 isLink = true;
                 linkedPoint = linkPoint;
+
                 if (name == ResourceTool.STARTPOINT) {
                     rope.startPoint = linkedPoint;
     

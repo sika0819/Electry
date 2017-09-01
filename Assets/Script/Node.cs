@@ -52,9 +52,5 @@ public class Node {
         }
         return false;
     }
-    public float Resistance {
-        get {
-            return CreateElement.Instance.GetElement(parentName).Resistance * 0.5f;
-        }
-    }
+   
 }
