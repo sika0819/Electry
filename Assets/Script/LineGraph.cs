@@ -9,7 +9,20 @@ public class LineGraph{//电路图
     private List<List<Node>> circlelist;
     private List<List<Node>> halfList;
     private List<List<Edge>> halfEdgeList;
-    public Element battery;
+    public Battery OnlyBattery {
+        get {
+            return battery;
+        }set {
+            if (battery == null)
+            {
+                setBattery(value);
+            }
+            else {
+                Debug.LogError("电池已经设置过了！");
+            }
+        }
+    }
+    private Battery battery;
     public LineGraph() {
         vertxList = new Dictionary<int, Node>();//储存序号
         circlelist = new List<List<Node>>();
@@ -77,6 +90,7 @@ public class LineGraph{//电路图
     {
         get
         {
+            //Debug.Log(battery.name+"电压:"+battery.Voltage);
             return battery.Voltage;
         }
     }
@@ -96,6 +110,25 @@ public class LineGraph{//电路图
             //Debug.Log(v.index+"——>"+w.index+"\n"+
             //    nodeI+"——>"+nodeJ);
             if ((v.index == nodeI && w.index == nodeJ)||(v.index==nodeJ&&w.index==nodeI))
+                return edges[i];
+        }
+        Debug.LogError("没有找到边！");
+        return null;
+    }
+    public Edge GetEdge(Edge edge)
+    {
+        List<Edge> edges = getEdges();
+        int nodeI=0,nodeJ=0;
+        nodeI = edge.either().index;
+        nodeJ = edge.other(edge.either()).index;
+        for (int i = 0; i < edges.Count; i++)
+        {
+            Node v = edges[i].either();
+            Node w = edges[i].other(v);
+            //Debug.Log(v.index+"——>"+w.index+"\n"+
+            //    nodeI+"——>"+nodeJ);
+            
+            if ((v.index == nodeI && w.index == nodeJ) || (v.index == nodeJ && w.index == nodeI))
                 return edges[i];
         }
         Debug.LogError("没有找到边！");
@@ -173,7 +206,8 @@ public class LineGraph{//电路图
             
         }
     }
-    public void setBattery(Element battery) {
+    void setBattery(Battery battery) {
+        //Debug.Log("设置电池,电压为："+battery.Voltage);
         this.battery = battery;
     }
     public void CheckCircle()
@@ -233,7 +267,7 @@ public class LineGraph{//电路图
                         }
                     }
                 }
-                Debug.Log(sameCount);
+                //Debug.Log(sameCount);
                 if (sameCount == halfList[temp].Count && halfList[a].Count == halfList[temp].Count)
                 {
                     halfList.RemoveAt(temp);
@@ -247,22 +281,22 @@ public class LineGraph{//电路图
             List<Edge> edgeList=new List<Edge>();
             for (int j = 0; j < halfList[i].Count - 1; j++)
             {
-                Edge e = GetEdge(halfList[i][j].index, halfList[i][j + 1].index);
+                Edge e = new Edge(halfList[i][j], halfList[i][j + 1]);
                 edgeList.Add(e);
             }
-            Edge lastEdge = GetEdge(halfList[i][halfList.Count - 1].index, halfList[i][0].index);
+            Edge lastEdge = new Edge(halfList[i][halfList[i].Count - 1], halfList[i][0]);
             edgeList.Add(lastEdge);
             halfEdgeList.Add(edgeList);
         }
-        Debug.Log(outHalfCircle());
+        //Debug.Log(outHalfCircle());
         CheckElectryInform();
     }
     public string outHalfCircle() {
-        string strResult = "有"+halfList.Count+"个环\n";
-        for (int i = 0; i < halfList.Count; i++) {
-            for (int j = 0; j < halfList[i].Count-1; j++)
+        string strResult = "有"+halfEdgeList.Count+"个环\n";
+        for (int i = 0; i < halfEdgeList.Count; i++) {
+            for (int j = 0; j < halfEdgeList[i].Count; j++)
             {
-                strResult += " 节点" + halfList[i][j].index + "——>" + "节点" + halfList[i][j + 1].index;
+                strResult +=halfEdgeList[i][j]+" ";
             }
             strResult += "\n";
         }
@@ -402,17 +436,7 @@ public class LineGraph{//电路图
                 Edge nowEdge = GetEdge(circlelist[0][i].index, circlelist[0][i + 1].index);
                 nowEdge.Electry = allElectry;
                 Element nowElement = CreateElement.Instance.GetElement(nowEdge.name);
-                switch (nowElement.EleType)
-                {
-                    case ElementType.Light:
-                        ElecLight light = CreateElement.Instance.GetEleLight(nowEdge.name);
-                        light.setCurrency(allElectry);
-                        light.Electry();
-                        break;
-                    default:
-                        nowElement.Electry();
-                        break;
-                }
+                FaDian(nowElement, allElectry);
             }
             Edge lastEdge = GetEdge(circlelist[0][circlelist[0].Count - 1].index, circlelist[0][0].index);
             lastEdge.Electry = allElectry;
@@ -442,19 +466,19 @@ public class LineGraph{//电路图
     /// </summary>
     public void GenerateBingLian()
     {
-        CreateElement.Instance.ShowInform = "并联中。";
+        CreateElement.Instance.ShowInform = "电路并联中。";
+        //Debug.Log(outHalfCircle());
         Dictionary<PairIndex, List<Edge>> repeatEdge = new Dictionary<PairIndex, List<Edge>>();//储存重复节点
-        Debug.Log(outHalfCircle());
         for (int i = 0; i < halfEdgeList.Count; i++)
         {
             for (int j = i; j < halfEdgeList.Count; j++)
             {
                 if (i == j)
                     continue;
-                string outstr = "";
+                //string outstr = "";
 
                 List<Edge> repeatSameCircle = new List<Edge>();//同一个环上重复的电阻
-                outstr = "第" + i + "环与第" + j + "环进行比较\n";
+                //outstr = "第" + i + "环与第" + j + "环进行比较\n";
                 for (int halfLoop = 0; halfLoop < halfEdgeList[i].Count; halfLoop++)
                 {
                     Edge e1 = halfEdgeList[i][halfLoop];
@@ -467,12 +491,12 @@ public class LineGraph{//电路图
                         Node w2 = e2.other(v2);
                         if (e1.isEqual(e2))
                         {
-                            outstr += "第" + i + "环与第" + j + "环重复的边：" + v1.index + "——>" + w1.index + "\n";
+                            //outstr += "第" + i + "环与第" + j + "环重复的边：" + v1.index + "——>" + w1.index + "\n";
                             repeatSameCircle.Add(e1);
                         }
                     }
                 }
-                Debug.Log(outstr);
+                //Debug.Log(outstr);
                 repeatEdge.Add(new PairIndex(i, j), repeatSameCircle);
             }
         }
@@ -485,10 +509,11 @@ public class LineGraph{//电路图
                 if (item.Key.PairKey == i || item.Key.PairValue == i)
                     repeapList = item.Value;
             }
-            List<Edge> copyList = halfEdgeList[i];
-            for (int copy = copyList.Count - 1; copy >= 0; copy--)
+            List<Edge> copyList =halfEdgeList[i];
+            List<Edge> myList = new List<Edge>();
+            for (int rep = 0; rep < repeapList.Count; rep++)
             {
-                for (int rep = 0; rep < repeapList.Count; rep++)
+                for (int copy = copyList.Count - 1; copy >= 0; copy--)
                 {
                     if (copyList[copy].isEqual(repeapList[rep]))
                     {
@@ -502,47 +527,118 @@ public class LineGraph{//电路图
         float upRes = 1;
         float dowRes = 0;
         float repeatRes = 0;
+        int resCount=0;
         foreach (KeyValuePair<PairIndex, List<Edge>> item in repeatEdge)
         {
             for (int i = 0; i < item.Value.Count; i++)
             {
-                Debug.Log(item.Value[i]);
-                repeatRes += item.Value[i].Resistance;
+                Edge e = GetEdge(item.Value[i]);
+                if (e.Resistance != 0)
+                {
+                    repeatRes += e.Resistance;
+                    resCount++;
+                }
             }
-            upRes *= repeatRes;
-            dowRes += repeatRes;
+            if (repeatRes != 0&&item.Value.Count>1)
+            {
+                upRes *= repeatRes;
+                dowRes += repeatRes;
+            }
         }
-        if (dowRes != 0)
+
+        if (dowRes != 0&&resCount>1)
         {
             allRepeatRes = upRes / dowRes;
+            //Debug.Log("上：" + upRes + " 下：" + dowRes);
         }
+        else {
+            allRepeatRes = repeatRes;
+        }
+        //Debug.Log("串联电阻一共：" + allRepeatRes);
         float allReless = 0;
         float up1 = 1;
         float down1 = 0;
         float relessResitance = 0;
         for (int i = 0; i < relessList.Count; i++)
         {
-
             for (int j = 0; j < relessList[i].Count; j++)
             {
-                relessResitance += relessList[i][j].Resistance;
+                //Debug.Log("剩下的："+relessList[i][j]);
+                Edge e = GetEdge(relessList[i][j]);
+                relessResitance = e.Resistance;
+                if (relessResitance != 0)
+                {
+                    up1 *= relessResitance;
+                    down1 += relessResitance;
+                }
             }
-            up1 *= relessResitance;
-            down1 += relessResitance;
+            
         }
         if (down1 != 0)
         {
             allReless = up1 / down1;
+            //Debug.Log("上" + up1 + "下" + down1 + "并联总电阻：" + allReless);
+        }
+        else {
+            CreateElement.Instance.ShowInform = "线路短路！请检查！";
+            return;
         }
         m_allResistance = allReless + allRepeatRes;
-        float allElectry = allVoltage / m_allResistance;
+        //Debug.Log("总电阻"+m_allResistance);
+        float allElectry = 0;
+        if (m_allResistance != 0)
+        {
+            allElectry = allVoltage / m_allResistance;
+        }
+        else {
+            CreateElement.Instance.ShowInform = "线路短路！请检查！";
+            return;
+        }
+        float allReaptVoltage = 0;
+        //Debug.Log("总电流："+allElectry);
+        //Debug.Log("总电压：" + allVoltage);
         foreach (KeyValuePair<PairIndex, List<Edge>> item in repeatEdge)
         {
             for (int i = 0; i < item.Value.Count; i++)
             {
-               Edge e= GetEdge(item.Value[i].either().index, item.Value[i].other(item.Value[i].either()).index);
+                Edge e= GetEdge(item.Value[i].either().index, item.Value[i].other(item.Value[i].either()).index);
+                Element nowEle = CreateElement.Instance.GetElement(e.name);
+                if (nowEle != null) {
+                    nowEle.setCurrency(allElectry);
+                    if (nowEle.EleType!=ElementType.Battery)
+                    {
+                        nowEle.Voltage = nowEle.Resistance * allElectry;
+                        nowEle.setCurrency(allElectry);
+                        //Debug.Log("当前元器件的电压为："+nowEle.Voltage);
+                        allReaptVoltage += nowEle.Voltage;
+                        FaDian(nowEle, allElectry);
+                    }
+                }
             }
         }
+        //Debug.Log("串联总电压："+allReaptVoltage);
+        //Debug.Log("总电流"+allElectry);
+       // Debug.Log("总电压："+ allVoltage);
+        for (int i = 0; i < relessList.Count; i++)
+        {
+            for (int j = 0; j < relessList[i].Count; j++)
+            {
+                Node v = relessList[i][j].either();
+                Node w = relessList[i][j].other(v);
+                Edge e = GetEdge(v.index,w.index);
+                //Debug.Log("剩下的边："+relessList[i][j]);
+                Element nowEle = CreateElement.Instance.GetElement(e.name);
+                if (nowEle != null&& nowEle.EleType != ElementType.Battery) {
+                    nowEle.Voltage=allVoltage - allReaptVoltage;
+                    //Debug.Log("当前电阻："+ nowEle.Resistance);
+                    float current = nowEle.Voltage/allReless;
+                    nowEle.setCurrency(current);
+                    FaDian(nowEle, current);
+                    //Debug.Log("当前电流：" + nowEle.Currency);
+                }
+            }
+        }
+        //Debug.Log("并联总电压："+ (allVoltage - allReaptVoltage));
     }
     public bool isLinkToBattery(List<Node> circle)
     {

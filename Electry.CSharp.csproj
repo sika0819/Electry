@@ -97,6 +97,7 @@
     <Compile Include="Assets\Script\RopePoint.cs" />
     <Compile Include="Assets\Script\Test.cs" />
     <Compile Include="Assets\Script\Vertex.cs" />
+    <Compile Include="Assets\Script\Voltmeter.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\DieTimer.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\FPSObjectShooter.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\LogicBreakableRopes.cs" />

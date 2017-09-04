@@ -84,15 +84,13 @@ public class RopePoint : MonoBehaviour {
 
                 if (name == ResourceTool.STARTPOINT) {
                     rope.startPoint = linkedPoint;
-    
                     rope.LinkObj1 = linkObj;
                 }
                 if (name == ResourceTool.ENDPOINT) {
                     rope.endPoint = linkedPoint;
-                    
                     rope.LinkObj2 = linkObj;
                 }
-
+            
                 if (rope.CanLink) {
                     rope.Link(rope.startPoint, rope.endPoint);
                 }

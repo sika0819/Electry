@@ -57,12 +57,12 @@ public class Rope : Element {
         }
     }
     
-    public bool IsLinked{
-        get {
-            bool linked = Pos != null && Negative != null;
-            return linked;
-        }
-    }
+    //public bool IsLinked{
+    //    get {
+    //        bool linked = Pos != null && Negative != null;
+    //        return linked;
+    //    }
+    //}
     public bool CanLink {
         get {
             return  LinkObj1!= null&&LinkObj2!=null&&startPoint!=null&&endPoint!=null;

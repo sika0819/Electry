@@ -11,6 +11,7 @@ public enum ElementType
     Switch,
     Resistance,
     Light,
+    Voltmeter,
     Default
 }
 public class CreateElement {
@@ -84,8 +85,9 @@ public class CreateElement {
                     ele.InitEleType(createType);
                     Battery battery = new Battery(ele);
                     battery.InitBattery(10);
-                    lineGraph.setBattery(battery);
+                    lineGraph.OnlyBattery = battery;
                     ele = battery;
+                    ele.Voltage = 10;
                     onlyBattery = battery;
                 }
                 else {
@@ -111,6 +113,10 @@ public class CreateElement {
             case ElementType.Resistance:
                 ele.SetResistance(5);
                 resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
+                break;
+            case ElementType.Voltmeter:
+                Voltmeter eleVoltemeter = new Voltmeter(ele);
+                eleVoltemeter.InitVolmeter();
                 break;
         }
         if (createType != ElementType.Line&&ele!=null)

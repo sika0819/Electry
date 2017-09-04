@@ -65,10 +65,6 @@ public class Edge{//电子元器件相当于加权边，有两个节点
         {
             equal = true;
         }
-        if (e.either().index == w.index && e.other(w).index == v.index)
-        {
-            equal = true;
-        }
         return equal;
     }
 }

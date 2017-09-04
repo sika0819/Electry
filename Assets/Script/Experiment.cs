@@ -21,6 +21,7 @@ public class Experiment : MonoBehaviour {
     bool isEnterArea;
     GameObject[] expButtonsObj;
     Toggle[] expButton;
+    Material mat;
     Camera expCamera;
     public Shader outlineShader;
     public Shader defaultShader;
@@ -34,7 +35,7 @@ public class Experiment : MonoBehaviour {
         for (int iLoop = 0; iLoop < expButtonsObj.Length; iLoop++)
         {
             expButton[iLoop] = expButtonsObj[iLoop].GetComponent<Toggle>();
-            EventTriggerListener.Get(expButtonsObj[iLoop]).onSelect = OnCreate;
+            EventTriggerListener.Get(expButtonsObj[iLoop]).onUp = OnCreate;
         }
         expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
         informText = GameObject.Find(ResourceTool.INFORM_TEXT).GetComponent<Text>();
@@ -45,27 +46,30 @@ public class Experiment : MonoBehaviour {
     {
         switch (go.name)
         {
-            case ResourceTool.ENERGY:
+            case ResourceTool.ENERGYBTN:
                 CreateElement.Instance.Init(ResourceTool.EnergyPreb,ElementType.Battery);
                 break;
-            case ResourceTool.LINE:
+            case ResourceTool.LINEBTN:
                 CreateElement.Instance.Init(ResourceTool.LinePreb,ElementType.Line);
                 break;
-            case ResourceTool.SWICTH:
+            case ResourceTool.SWICTHBTN:
                 CreateElement.Instance.Init(ResourceTool.SwitchPreb,ElementType.Switch);
                 break;
-            case ResourceTool.RESISTANCE:
+            case ResourceTool.RESISTANCEBTN:
                 CreateElement.Instance.Init(ResourceTool.ResistancePreb,ElementType.Resistance);
                 break;
-            case ResourceTool.LIGHT:
+            case ResourceTool.LIGHTBTN:
                 CreateElement.Instance.Init(ResourceTool.LightPreb,ElementType.Light);
+                break;
+            case ResourceTool.VOLTMETERBTN:
+                CreateElement.Instance.Init(ResourceTool.VoltmeterPreb, ElementType.Voltmeter);
                 break;
         }
         createdElement=CreateElement.Instance.Ele;
         if (createdElement != null)
         {
-            //Material mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
-            //defaultShader = mat.shader;
+            mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
+            defaultShader = mat.shader;
             isMove = true;
         }
         
@@ -87,6 +91,7 @@ public class Experiment : MonoBehaviour {
                 if (isEnterArea&&Input.GetMouseButtonDown(0)&&createdElement==null)
                 {
                     createdElement = CreateElement.Instance.GetElement(hit.collider.name);
+                    createdElement.setShader(outlineShader);
                     if (createdElement != null)
                     {
                         if (createdElement.EleType == ElementType.Switch)
@@ -116,14 +121,22 @@ public class Experiment : MonoBehaviour {
     public void OnPointerUp() {
         if (isEnterArea)
         {
-            createdElement = null;
-            isMove = false;
+            if (createdElement != null)
+            {
+                createdElement.setShader(defaultShader);
+                createdElement = null;
+                isMove = false;
+            }
         }
     }
     public void OnPointExit() {
-        isEnterArea = false;
-        createdElement = null;
-        isMove = false;
+        if (createdElement != null)
+        {
+            isEnterArea = false;
+            createdElement.setShader(defaultShader);
+            createdElement = null;
+            isMove = false;
+        }
     }
     void OnApplicationQuit() {
         CreateElement.Instance.OnDestory();

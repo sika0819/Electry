@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class Element{//电子元器件基类
     //private ElecEdge electryElement;//边节点
-    private Vertex pos;//正极点
-    private Vertex negative;//负极点
+    //private Vertex pos;//正极点
+    //private Vertex negative;//负极点
     private Edge insideEdge;
     private Node point1;
     private Node point2;
     private ElementType elementType;
-    
+    private float current;
     private GameObject eleObj;
     private GameObject consoleArea;
     #region public Property
@@ -20,12 +20,12 @@ public class Element{//电子元器件基类
             return eleObj.name;
         }
     }
-   
+    
     public float Currency
     {
         get
         {
-            return pos.Electry;
+            return current;
         }
     }
     public float Resistance
@@ -144,15 +144,24 @@ public class Element{//电子元器件基类
     public void Init(Element copyEle) {
         this.eleObj = copyEle.EleObj;
        // this.electryElement = copyEle.ElectryEdge;
-        this.pos = copyEle.Pos;
-        this.negative = copyEle.Negative;
         this.elementType = copyEle.EleType;
         this.point1 =copyEle.startPoint;
         this.point2 =copyEle.endPoint;
         this.insideEdge = copyEle.LineEdge;
        // this.electryElement = copyEle.ElectryEdge;
         this.Resistance = copyEle.Resistance;
+        this.Voltage = copyEle.Voltage;
     }
+
+    public void setShader(Shader setShader)
+    {
+        Renderer[] shaderArray = eleObj.GetComponentsInChildren<Renderer>();
+        for (int i = 0; i<shaderArray.Length; i++)
+        {
+            shaderArray[i].sharedMaterial.shader = setShader;
+        }
+    }
+
     public void Init(GameObject obj,int i)
     {
         eleObj = ResourceTool.InstitateGameObject(obj);
@@ -164,8 +173,7 @@ public class Element{//电子元器件基类
         //Debug.Log("电流："+Currency+" 电阻："+Resistance+" 电压:"+Voltage);
     }
     public void setCurrency(float current) {//设置电流
-        pos.setElectry(current);
-        negative.setElectry(current);
+        this.current = current;
     }
     
    
@@ -186,8 +194,8 @@ public class Element{//电子元器件基类
            
             point1 = new Node(GenrateIndex.Instance.Index);
             point2 = new Node(GenrateIndex.Instance.Index);
-            pos = new Vertex(point1.index);
-            negative = new Vertex(point2.index);
+            //pos = new Vertex(point1.index);
+            //negative = new Vertex(point2.index);
             insideEdge = new Edge(point1, point2);
             insideEdge.Resistance = 0;
             //Debug.Log(insideEdge);
@@ -222,8 +230,8 @@ public class Element{//电子元器件基类
         }
         if (initType != ElementType.Line)
         {
-            startVertexObj.name = ResourceTool.STARTPOINT + pos.index;
-            endVertexObj.name = ResourceTool.ENDPOINT + negative.index;
+            startVertexObj.name = ResourceTool.STARTPOINT + point1.index;
+            endVertexObj.name = ResourceTool.ENDPOINT + point2.index;
         }
         point1.InitGameObj(startVertexObj);
         point2.InitGameObj(endVertexObj);
@@ -266,20 +274,20 @@ public class Element{//电子元器件基类
             return elementType;
         }
     }
-    public Vertex Pos {
-        get {
-            return pos;
-        }set {
-            pos = value;
-        }
-    }
-    public Vertex Negative {
-        get {
-            return negative;
-        }set {
-            negative = value;
-        }
-    }
+    //public Vertex Pos {
+    //    get {
+    //        return pos;
+    //    }set {
+    //        pos = value;
+    //    }
+    //}
+    //public Vertex Negative {
+    //    get {
+    //        return negative;
+    //    }set {
+    //        negative = value;
+    //    }
+    //}
     public override string ToString()
     {
         return point1.index+" " + point2.index;
