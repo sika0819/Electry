@@ -158,10 +158,26 @@ public class Element{//电子元器件基类
         Renderer[] shaderArray = eleObj.GetComponentsInChildren<Renderer>();
         for (int i = 0; i<shaderArray.Length; i++)
         {
-            shaderArray[i].sharedMaterial.shader = setShader;
+            shaderArray[i].material.shader = setShader;
         }
     }
-
+    public void setShader(Shader[] lastRender)
+    {
+        Renderer[] renderArray = eleObj.GetComponentsInChildren<Renderer>();
+        List<Material> matList = new List<Material>();
+        for (int i = 0; i < renderArray.Length; i++)
+        {
+            for (int j = 0; j < renderArray[i].materials.Length; j++)
+            {
+                matList.Add(renderArray[i].materials[j]);
+            }
+        }
+        //Debug.Log(matList.Count);
+        //Debug.Log(lastRender.Length);
+        for (int i = 0; i < matList.Count; i++) {
+            matList[i].shader = lastRender[i];
+        }
+    }
     public void Init(GameObject obj,int i)
     {
         eleObj = ResourceTool.InstitateGameObject(obj);

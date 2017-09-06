@@ -7,12 +7,12 @@ public static class ResourceTool{
     public const string ENDPOINT = "endPoint";
     public const string POINT = "Point";
     public const string CONSOLEAREA = "ExperimentArea";
+    public const string EXPERIMENT = "Experiment";
     public const string ENERGYBTN = "energyBtn";
     public const string LINEBTN = "lineBtn";
     public const string RESISTANCEBTN = "resistanceBtn";
     public const string LIGHTBTN = "lightBtn";
-    public const string VOLTMETERBTN = "voltmeterBtn";
-    public const string VOLTMETER = "Voltmeter";
+    public const string VOLTMETERBTN = "wanYongBiaoBtn";
     public const string SWICTHBTN = "switchBtn";
     public const string EXPCAMERA = "expCamera";
     public const string GROUND = "Ground";
@@ -21,12 +21,14 @@ public static class ResourceTool{
     public const string EXPAREA = "Area";
     public const string INFORM_TEXT = "InformText";
     public static string ROPE = "Rope";
+    public static string ROPENODE = "ROPENODE";
+    public static string WANYONGBIAO = "WanYongBiao";
     public static GameObject EnergyPreb;
     public static GameObject LinePreb;
     public static GameObject SwitchPreb;
     public static GameObject LightPreb;
     public static GameObject ResistancePreb;
-    public static GameObject VoltmeterPreb;
+    public static GameObject WanYongBiaoPreb;
 
     public static void InitResources() {
         EnergyPreb = Resources.Load<GameObject>("Prefab/Battery");
@@ -34,7 +36,7 @@ public static class ResourceTool{
         SwitchPreb = Resources.Load<GameObject>("Prefab/Switch");
         ResistancePreb = Resources.Load<GameObject>("Prefab/Resistance");
         LightPreb = Resources.Load<GameObject>("Prefab/Light");
-        VoltmeterPreb = Resources.Load<GameObject>("Prefab/Voltmeter");
+        WanYongBiaoPreb = Resources.Load<GameObject>("Prefab/WanYongBiao");
     }
     public static GameObject InstitateGameObject(GameObject prefab) {
         //Debug.Log(prefab.name);

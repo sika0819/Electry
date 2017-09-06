@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Material\Glass.shader" />
+    <None Include="Assets\Material\Standard.shader" />
     <None Include="Assets\Material\outline.shader" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_en.txt" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_ja.txt" />

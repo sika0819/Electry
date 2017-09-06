@@ -19,6 +19,7 @@ public class EventTriggerListener : UnityEngine.EventSystems.EventTrigger
     }
     public override void OnPointerClick(PointerEventData eventData)
     {
+
         if (onClick != null) onClick(gameObject);
     }
     public override void OnPointerDown(PointerEventData eventData)

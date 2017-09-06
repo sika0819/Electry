@@ -8,6 +8,7 @@ public class RopePoint : MonoBehaviour {
     Camera expCamera;
     Node linkedPoint;
     Rope rope;
+    Experiment exp;
     public GameObject linkObj {
         get {
             return _linkObj;
@@ -26,17 +27,18 @@ public class RopePoint : MonoBehaviour {
         ropeController = transform.parent.GetComponentInChildren<UltimateRope>();
         expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
         rope = CreateElement.Instance.GetRope(transform.parent.name);
+        exp = GameObject.Find(ResourceTool.EXPERIMENT).GetComponent<Experiment>();
     }
 	
 	// Update is called once per frame
 	void Update () {
         Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (isLink) {
+        if (isLink&&!exp.startDraw) {
             if(linkObj!=null)
             transform.position = linkObj.transform.position;
         }
-        if (!isLink&&isMove)
+        if (isMove)
         {
             if (Physics.Raycast(ray, out hit))
             {
@@ -48,33 +50,20 @@ public class RopePoint : MonoBehaviour {
         if (Input.GetMouseButtonUp(0)) {
             isMove = false;
         }
-        if (Input.GetMouseButtonUp(1))
-        {
-            CreateElement.Instance.ShowInform = "右键取消连接";
-            if (Physics.Raycast(ray, out hit))
-            {
-                CreateElement.Instance.ShowInform = "线连接模式，当前选中为：" + hit.collider.name;
-                if (hit.collider.name == gameObject.name) {
-                    linkObj = null;
-                    rope.RemoveLink(rope.startPoint, rope.endPoint);
-                    isLink =false;
-                    isMove = true;
-                }
-            }
-        }
+       
 	}
     void OnMouseDown() {
         isMove = true;
     }
     void OnTriggerEnter(Collider coli)
     {
-        
-        if (coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent&&(!coli.transform.parent.name.Contains(ResourceTool.ROPE)))
+        Debug.Log(coli.name);
+        if (!exp.startDraw&&coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent&&(!coli.transform.parent.name.Contains(ResourceTool.ROPE)))
         {
             if (!isLink)
             {
                 linkObj = coli.gameObject;
-              //  Debug.Log(linkObj.name);
+                Debug.Log(coli.gameObject.name);
                 Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;
@@ -90,8 +79,8 @@ public class RopePoint : MonoBehaviour {
                     rope.endPoint = linkedPoint;
                     rope.LinkObj2 = linkObj;
                 }
-            
-                if (rope.CanLink) {
+                if (rope.CanLink)
+                {
                     rope.Link(rope.startPoint, rope.endPoint);
                 }
             }

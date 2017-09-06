@@ -18,23 +18,24 @@ public class Experiment : MonoBehaviour {
     
     private Element _createElement;
     bool isMove = false;
-    bool isEnterArea;
+    public bool startDraw;
     GameObject[] expButtonsObj;
-    Toggle[] expButton;
-    Material mat;
+    Button[] expButton;
     Camera expCamera;
+    List<Material> matArray;
     public Shader outlineShader;
-    public Shader defaultShader;
+    public Shader[] defaultShader;
     Text informText;
     Vector3 hitPos;
+    public float rotateSpeed=10;
     // Use this for initialization
     void Start () {
         
         expButtonsObj = GameObject.FindGameObjectsWithTag(ResourceTool.BTNTAG);
-        expButton = new Toggle[expButtonsObj.Length];
+        expButton = new Button[expButtonsObj.Length];
         for (int iLoop = 0; iLoop < expButtonsObj.Length; iLoop++)
         {
-            expButton[iLoop] = expButtonsObj[iLoop].GetComponent<Toggle>();
+            expButton[iLoop] = expButtonsObj[iLoop].GetComponent<Button>();
             EventTriggerListener.Get(expButtonsObj[iLoop]).onUp = OnCreate;
         }
         expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
@@ -44,35 +45,50 @@ public class Experiment : MonoBehaviour {
 
     private void OnCreate(GameObject go)
     {
-        switch (go.name)
+        if (createdElement == null)
         {
-            case ResourceTool.ENERGYBTN:
-                CreateElement.Instance.Init(ResourceTool.EnergyPreb,ElementType.Battery);
-                break;
-            case ResourceTool.LINEBTN:
-                CreateElement.Instance.Init(ResourceTool.LinePreb,ElementType.Line);
-                break;
-            case ResourceTool.SWICTHBTN:
-                CreateElement.Instance.Init(ResourceTool.SwitchPreb,ElementType.Switch);
-                break;
-            case ResourceTool.RESISTANCEBTN:
-                CreateElement.Instance.Init(ResourceTool.ResistancePreb,ElementType.Resistance);
-                break;
-            case ResourceTool.LIGHTBTN:
-                CreateElement.Instance.Init(ResourceTool.LightPreb,ElementType.Light);
-                break;
-            case ResourceTool.VOLTMETERBTN:
-                CreateElement.Instance.Init(ResourceTool.VoltmeterPreb, ElementType.Voltmeter);
-                break;
+            switch (go.name)
+            {
+                case ResourceTool.ENERGYBTN:
+                    CreateElement.Instance.Init(ResourceTool.EnergyPreb, ElementType.Battery);
+                    break;
+                case ResourceTool.LINEBTN:
+                    CreateElement.Instance.Init(ResourceTool.LinePreb, ElementType.Line);
+                    break;
+                case ResourceTool.SWICTHBTN:
+                    CreateElement.Instance.Init(ResourceTool.SwitchPreb, ElementType.Switch);
+                    break;
+                case ResourceTool.RESISTANCEBTN:
+                    CreateElement.Instance.Init(ResourceTool.ResistancePreb, ElementType.Resistance);
+                    break;
+                case ResourceTool.LIGHTBTN:
+                    CreateElement.Instance.Init(ResourceTool.LightPreb, ElementType.Light);
+                    break;
+                case ResourceTool.VOLTMETERBTN:
+                    CreateElement.Instance.Init(ResourceTool.WanYongBiaoPreb, ElementType.Voltmeter);
+                    break;
+            }
+            createdElement = CreateElement.Instance.Ele;
+            if (createdElement != null)
+            {
+                isMove = true;
+                startDraw = true;
+                matArray = new List<Material>();
+                Renderer[] renderArray = createdElement.EleObj.GetComponentsInChildren<Renderer>();
+                for (int i = 0; i < renderArray.Length; i++)
+                {
+                    for (int j = 0; j < renderArray[i].materials.Length; j++)
+                    {
+                        matArray.Add(renderArray[i].materials[j]);
+                    }
+                }
+                defaultShader = new Shader[matArray.Count];
+                for (int i = 0; i < matArray.Count; i++)
+                {
+                    defaultShader[i] = matArray[i].shader;
+                }
+            }
         }
-        createdElement=CreateElement.Instance.Ele;
-        if (createdElement != null)
-        {
-            mat = createdElement.EleObj.GetComponentInChildren<Renderer>().sharedMaterial;
-            defaultShader = mat.shader;
-            isMove = true;
-        }
-        
     }
 
     RaycastHit hit;
@@ -82,21 +98,39 @@ public class Experiment : MonoBehaviour {
        
         if (Physics.Raycast(ray, out hit))
         {
-            if (isEnterArea && hit.collider.tag == ResourceTool.GROUND)
+            if (hit.collider.tag == ResourceTool.GROUND)
             {
                 hitPos = hit.point;
+                if (createdElement != null)
+                {
+                    createdElement.SetPosition(hitPos);
+                }
             }
-            else if(hit.collider.tag == ResourceTool.PREFAB)
+            else if (hit.collider.tag == ResourceTool.PREFAB)
             {
-                if (isEnterArea&&Input.GetMouseButtonDown(0)&&createdElement==null)
+                if (!startDraw && Input.GetMouseButtonDown(0) && createdElement == null)
                 {
                     createdElement = CreateElement.Instance.GetElement(hit.collider.name);
-                    createdElement.setShader(outlineShader);
+
                     if (createdElement != null)
                     {
+                        matArray = new List<Material>();
+                        Renderer[] renderArray = createdElement.EleObj.GetComponentsInChildren<Renderer>();
+                        for (int i = 0; i < renderArray.Length; i++)
+                        {
+                            for (int j = 0; j < renderArray[i].materials.Length; j++)
+                            {
+                                matArray.Add(renderArray[i].materials[j]);
+                            }
+                        }
+                        defaultShader = new Shader[matArray.Count];
+                        for (int i = 0; i < matArray.Count; i++)
+                        {
+                            defaultShader[i] = matArray[i].shader;
+                        }
+                        createdElement.setShader(outlineShader);
                         if (createdElement.EleType == ElementType.Switch)
                         {
-                            Debug.Log(createdElement.name);
                             EleSwitch seleSwitch = CreateElement.Instance.GetSwitch(createdElement.name);
                             seleSwitch.ToggleTurn();
                         }
@@ -104,40 +138,46 @@ public class Experiment : MonoBehaviour {
                     isMove = true;
                 }
             }
-           
+            else if (hit.collider.tag == ResourceTool.ROPENODE) {
+                createdElement = CreateElement.Instance.GetElement(hit.collider.gameObject.transform.parent.parent.name);
+            }
+            if (startDraw && Input.GetMouseButtonDown(0))
+            {
+                startDraw = false;
+                createdElement = null;
+            }
         }
-        if (isMove && Input.GetMouseButton(0))
+       
+        if (!startDraw && isMove && Input.GetMouseButton(0))
         {
             if (createdElement != null)
             {
+                createdElement.setShader(outlineShader);
                 createdElement.SetPosition(hitPos);
             }
         }
-        CreateElement.Instance.Update();
-    }
-    public void OnPointerEnter() {
-        isEnterArea = true;
-    }
-    public void OnPointerUp() {
-        if (isEnterArea)
+        if (!startDraw&&isMove && Input.GetMouseButtonUp(0))
         {
+            isMove = false;
             if (createdElement != null)
             {
                 createdElement.setShader(defaultShader);
                 createdElement = null;
-                isMove = false;
             }
         }
-    }
-    public void OnPointExit() {
-        if (createdElement != null)
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
         {
-            isEnterArea = false;
-            createdElement.setShader(defaultShader);
-            createdElement = null;
-            isMove = false;
+            if (createdElement != null)
+            {
+                Vector3 rotateAngle = createdElement.EleObj.transform.eulerAngles;
+                rotateAngle = new Vector3(rotateAngle.x, rotateAngle.y + rotateSpeed * Input.mouseScrollDelta.y, rotateAngle.z);
+                createdElement.SetRotation(rotateAngle);
+            }
         }
+       
+        CreateElement.Instance.Update();
     }
+
     void OnApplicationQuit() {
         CreateElement.Instance.OnDestory();
         GenrateIndex.Instance.OnDestory();

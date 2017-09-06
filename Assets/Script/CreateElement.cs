@@ -21,6 +21,7 @@ public class CreateElement {
     List<KeyValuePair<string, ElecLight>> lightList;
     List<KeyValuePair<string, EleSwitch>> swicthList;
     List<KeyValuePair<string, Rope>> ropeList;
+    List<KeyValuePair<string, WanYongBiao>> voltmeterList;
     static int createIndex=0;
     Text InformText;
    
@@ -30,6 +31,7 @@ public class CreateElement {
         resistanceList = new List<KeyValuePair<string, Element>>();
         lightList = new List<KeyValuePair<string, ElecLight>>();
         swicthList = new List<KeyValuePair<string, EleSwitch>>();
+        voltmeterList = new List<KeyValuePair<string, WanYongBiao>>();
         lineGraph = new LineGraph();
     }
     public static CreateElement Instance {
@@ -63,6 +65,7 @@ public class CreateElement {
     
     public void Init(GameObject obj,ElementType createType)
     {
+        
         elePreb = obj;
         Element ele = new Element();
         createIndex++;
@@ -107,7 +110,6 @@ public class CreateElement {
                 EleSwitch eleSwitch = new EleSwitch(ele);
                 eleSwitch.InitSwitch();
                 ele = eleSwitch;
-                eleSwitch.SetEleObj(eleSwitch.EleObj);
                 swicthList.Add(new KeyValuePair<string, EleSwitch>(eleSwitch.name,eleSwitch));
                 break;
             case ElementType.Resistance:
@@ -115,15 +117,27 @@ public class CreateElement {
                 resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
                 break;
             case ElementType.Voltmeter:
-                Voltmeter eleVoltemeter = new Voltmeter(ele);
+                WanYongBiao eleVoltemeter = new WanYongBiao(ele);
                 eleVoltemeter.InitVolmeter();
+                ele = eleVoltemeter;
+                
+                voltmeterList.Add(new KeyValuePair<string, WanYongBiao>(eleVoltemeter.name, eleVoltemeter));
                 break;
         }
-        if (createType != ElementType.Line&&ele!=null)
+        if (createType != ElementType.Line && ele != null && createType != ElementType.Voltmeter)
         {
             lineGraph.addVertex(ele.startPoint);
             lineGraph.addVertex(ele.endPoint);
             lineGraph.addEdge(ele.LineEdge);
+        }
+        else if (createType == ElementType.Voltmeter)
+        {
+            lineGraph.addVertex(GetVoltmeter(ele.name).VoltStartPoint);
+            lineGraph.addVertex(GetVoltmeter(ele.name).VoltEndPoint);
+            lineGraph.addVertex(GetVoltmeter(ele.name).ElecStartPoint);
+            lineGraph.addVertex(GetVoltmeter(ele.name).ElecEndPoint);
+            lineGraph.addEdge(GetVoltmeter(ele.name).LineEdge);
+            lineGraph.addEdge(GetVoltmeter(ele.name).LineEdge2);
         }
         Ele = ele;
         if(ele!=null)
@@ -137,22 +151,14 @@ public class CreateElement {
     }
 
     public void Update(){//每帧更新
-        
-        
+        foreach (KeyValuePair<string,WanYongBiao>item in voltmeterList) {
+           // item.Value.ReadValue();
+        }
     }
   
     public Node GetPoint(string name)
     {
-        foreach(KeyValuePair<string,Element>item in elementList) {
-            if (item.Value.startPoint.name == name)
-            {
-                return item.Value.startPoint;
-            }
-            if (item.Value.endPoint.name == name)
-            {
-                return item.Value.endPoint;
-            }
-        }
+        return lineGraph.GetNode(name);
         return null;
     }
     
@@ -164,6 +170,7 @@ public class CreateElement {
         }
     }
     public Element GetElement(string name) {
+        Debug.Log(name);
         if(elementList.ContainsKey(name))
         return elementList[name];
         return null;
@@ -192,7 +199,7 @@ public class CreateElement {
     {
         for (int i = 0; i < swicthList.Count; i++)
         {
-            Debug.Log(swicthList[i].Key);
+            //Debug.Log(swicthList[i].Key);
             if (swicthList[i].Key == name)
                 return swicthList[i].Value;
         }
@@ -207,8 +214,15 @@ public class CreateElement {
         }
         return null;
     }
-    
 
+    public WanYongBiao GetVoltmeter(string name) {
+        for (int i = 0; i < voltmeterList.Count; i++)
+        {
+            if (voltmeterList[i].Key == name)
+                return voltmeterList[i].Value;
+        }
+        return null;
+    }
     public void OnDestory() {
         elementList.Clear();
         elementList = null;

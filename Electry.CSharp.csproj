@@ -97,7 +97,7 @@
     <Compile Include="Assets\Script\RopePoint.cs" />
     <Compile Include="Assets\Script\Test.cs" />
     <Compile Include="Assets\Script\Vertex.cs" />
-    <Compile Include="Assets\Script\Voltmeter.cs" />
+    <Compile Include="Assets\Script\WanYongBiao.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\DieTimer.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\FPSObjectShooter.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Sample Scenes\Sample Scripts\LogicBreakableRopes.cs" />
@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Material\Glass.shader" />
+    <None Include="Assets\Material\Standard.shader" />
     <None Include="Assets\Material\outline.shader" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_en.txt" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_ja.txt" />

@@ -58,7 +58,8 @@ public class LineGraph{//电路图
         edgeCount++;
         CheckCircle();
         
-        //Debug.Log("添加边:节点" + v.index + "————>节点" + w.index+" 电压"+e.Voltage);
+        Debug.Log("添加边:节点" + v.index + "————>节点" + w.index+" 电压"+e.Voltage);
+        Debug.Log("元器件名称"+e.name);
        // Debug.Log(ToString());
     }
 
@@ -449,6 +450,8 @@ public class LineGraph{//电路图
         }
     }
     void FaDian(Element lastElement,float allElectry) {
+        lastElement.setCurrency(allElectry);
+        lastElement.Voltage = allElectry * lastElement.Resistance;
         switch (lastElement.EleType)
         {
             case ElementType.Light:
@@ -626,7 +629,7 @@ public class LineGraph{//电路图
                 Node v = relessList[i][j].either();
                 Node w = relessList[i][j].other(v);
                 Edge e = GetEdge(v.index,w.index);
-                //Debug.Log("剩下的边："+relessList[i][j]);
+                Debug.Log(e.name);
                 Element nowEle = CreateElement.Instance.GetElement(e.name);
                 if (nowEle != null&& nowEle.EleType != ElementType.Battery) {
                     nowEle.Voltage=allVoltage - allReaptVoltage;
@@ -659,5 +662,11 @@ public class LineGraph{//电路图
         }
         return false;
     }
-    
+    public Node GetNode(string name){
+        for (int i = 0; i < VertexCount; i++) {
+            if (getVertex(i).name == name)
+                return getVertex(i);
+        }
+        return null;
+    }
 }

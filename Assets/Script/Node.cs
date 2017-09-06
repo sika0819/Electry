@@ -30,7 +30,9 @@ public class Node {
     }
     public string name {
         get {
+            if(nodeObj!=null)
             return nodeObj.name;
+            return "";
         }
     }
     public GameObject NodeObj {
