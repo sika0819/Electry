@@ -98,6 +98,7 @@ public class WanYongBiao:Element {
         NumberText = EleObj.GetComponentInChildren<TextMesh>();
         WanVoltage = 0;
         WanCurrent = 0;
+        NumberText.text = "0";
     }
     public void LinkVoltage(Edge e) {
         LineEdge = e;
