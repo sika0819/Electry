@@ -17,21 +17,21 @@ public enum ElementType
 public class CreateElement {
     public static Dictionary<string, Element> elementList=new Dictionary<string, Element>();
     Battery onlyBattery;
-    List<KeyValuePair<string, Element>> resistanceList;
-    List<KeyValuePair<string, ElecLight>> lightList;
-    List<KeyValuePair<string, EleSwitch>> swicthList;
-    List<KeyValuePair<string, Rope>> ropeList;
-    List<KeyValuePair<string, WanYongBiao>> voltmeterList;
+    Dictionary<string, Element> resistanceList;
+    Dictionary<string, ElecLight> lightList;
+    Dictionary<string, EleSwitch> swicthList;
+    Dictionary<string, Rope> ropeList;
+    Dictionary<string, WanYongBiao> voltmeterList;
     static int createIndex=0;
     Text InformText;
    
     public LineGraph lineGraph;
     public CreateElement() {
-        ropeList = new List<KeyValuePair<string, Rope>>();
-        resistanceList = new List<KeyValuePair<string, Element>>();
-        lightList = new List<KeyValuePair<string, ElecLight>>();
-        swicthList = new List<KeyValuePair<string, EleSwitch>>();
-        voltmeterList = new List<KeyValuePair<string, WanYongBiao>>();
+        ropeList = new Dictionary<string, Rope>();
+        resistanceList = new Dictionary<string, Element>();
+        lightList = new Dictionary<string, ElecLight>();
+        swicthList = new Dictionary<string, EleSwitch>();
+        voltmeterList = new Dictionary<string, WanYongBiao>();
         lineGraph = new LineGraph();
     }
     public static CreateElement Instance {
@@ -79,7 +79,7 @@ public class CreateElement {
                 Rope rope = new Rope(ele);
                 rope.InitRope();  
                 ele = rope;
-                ropeList.Add(new KeyValuePair<string, Rope>(rope.name, rope));
+                ropeList.Add(rope.name, rope);
                 break;
             case ElementType.Battery:
                 if (onlyBattery == null)
@@ -104,24 +104,24 @@ public class CreateElement {
                 elecLight.InitLight();
                 elecLight.SetResistance(5);
                 ele = elecLight;
-                lightList.Add(new KeyValuePair<string, ElecLight>(elecLight.name, elecLight));
+                lightList.Add(elecLight.name, elecLight);
                 break;
             case ElementType.Switch:
                 EleSwitch eleSwitch = new EleSwitch(ele);
                 eleSwitch.InitSwitch();
                 ele = eleSwitch;
-                swicthList.Add(new KeyValuePair<string, EleSwitch>(eleSwitch.name,eleSwitch));
+                swicthList.Add(eleSwitch.name, eleSwitch);
                 break;
             case ElementType.Resistance:
                 ele.SetResistance(5);
-                resistanceList.Add(new KeyValuePair<string, Element>(ele.name, ele));
+                resistanceList.Add(ele.name, ele);
                 break;
             case ElementType.Voltmeter:
                 WanYongBiao eleVoltemeter = new WanYongBiao(ele);
                 eleVoltemeter.InitVolmeter();
                 ele = eleVoltemeter;
                 
-                voltmeterList.Add(new KeyValuePair<string, WanYongBiao>(eleVoltemeter.name, eleVoltemeter));
+                voltmeterList.Add(eleVoltemeter.name, eleVoltemeter);
                 break;
         }
         if (createType != ElementType.Line && ele != null && createType != ElementType.Voltmeter)
@@ -145,6 +145,33 @@ public class CreateElement {
 
     }
 
+    public void RemoveElement(Element e)
+    {
+        lineGraph.removeEdge(e.LineEdge);
+        elementList.Remove(e.name);
+        switch (e.EleType) {
+            case ElementType.Line:
+                ropeList.Remove(e.name);
+                break;
+            case ElementType.Battery:
+                lineGraph.OnlyBattery = null;
+                onlyBattery = null;
+                break;
+            case ElementType.Light:
+                lightList.Remove(e.name);
+                break;
+            case ElementType.Switch:
+                swicthList.Remove(e.name);
+                break;
+            case ElementType.Resistance:
+                resistanceList.Remove(e.name);
+                break;
+            case ElementType.Voltmeter:
+                voltmeterList.Remove(e.name);
+                break;
+        }
+    }
+   
     public void SetInformBox(Text informBox)
     {
         this.InformText = informBox;
@@ -170,57 +197,39 @@ public class CreateElement {
         }
     }
     public Element GetElement(string name) {
-        Debug.Log(name);
+        //Debug.Log(name);
         if(elementList.ContainsKey(name))
         return elementList[name];
         return null;
     }
     public Element GetResistance(string name) {
-        for (int i = 0; i < resistanceList.Count; i++) {
-            if (resistanceList[i].Key == name)
-                return resistanceList[i].Value;
-        }
+        if (resistanceList.ContainsKey(name))
+            return resistanceList[name];
         return null;
     }
     public ElecLight GetEleLight(string name)
     {
-        for (int i = 0; i < lightList.Count; i++)
-        {
-            if (lightList[i].Key == name)
-                return lightList[i].Value;
-        }
+        if (lightList.ContainsKey(name))
+            return lightList[name];
         return null;
     }
-    public Battery GetBattery()
-    {
-        return onlyBattery;
-    }
+
     public EleSwitch GetSwitch(string name)
     {
-        for (int i = 0; i < swicthList.Count; i++)
-        {
-            //Debug.Log(swicthList[i].Key);
-            if (swicthList[i].Key == name)
-                return swicthList[i].Value;
-        }
+        if (swicthList.ContainsKey(name))
+            return swicthList[name];
         return null;
     }
     public Rope GetRope(string name)
     {
-        for (int i = 0; i < ropeList.Count; i++)
-        {
-            if (ropeList[i].Key == name)
-                return ropeList[i].Value;
-        }
+        if (ropeList.ContainsKey(name))
+            return ropeList[name];
         return null;
     }
 
     public WanYongBiao GetVoltmeter(string name) {
-        for (int i = 0; i < voltmeterList.Count; i++)
-        {
-            if (voltmeterList[i].Key == name)
-                return voltmeterList[i].Value;
-        }
+        if (voltmeterList.ContainsKey(name))
+            return voltmeterList[name];
         return null;
     }
     public void OnDestory() {

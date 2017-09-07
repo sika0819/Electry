@@ -13,13 +13,7 @@ public class LineGraph{//电路图
         get {
             return battery;
         }set {
-            if (battery == null)
-            {
-                setBattery(value);
-            }
-            else {
-                Debug.LogError("电池已经设置过了！");
-            }
+            setBattery(value);
         }
     }
     private Battery battery;
@@ -58,8 +52,8 @@ public class LineGraph{//电路图
         edgeCount++;
         CheckCircle();
         
-        Debug.Log("添加边:节点" + v.index + "————>节点" + w.index+" 电压"+e.Voltage);
-        Debug.Log("元器件名称"+e.name);
+        //Debug.Log("添加边:节点" + v.index + "————>节点" + w.index+" 电压"+e.Voltage);
+        //Debug.Log("元器件名称"+e.name);
        // Debug.Log(ToString());
     }
 
@@ -204,8 +198,8 @@ public class LineGraph{//电路图
                     vertxList[i].adj.RemoveAt(j);
                 }
             }
-            
         }
+        CheckCircle();
     }
     void setBattery(Battery battery) {
         //Debug.Log("设置电池,电压为："+battery.Voltage);
@@ -225,7 +219,9 @@ public class LineGraph{//电路图
                 DFS(i, visited, stack, ref top, inStack);
             }
         }
+        
         generateHalf();
+        Debug.Log(outHalfCircle());
     }
     void generateHalf() {
         halfList = circlelist;
@@ -392,6 +388,12 @@ public class LineGraph{//电路图
         else
         {
             CreateElement.Instance.ShowInform = "当前为断路！请连接电源";
+            for (int i = 0; i < getEdges().Count; i++) {
+                Element temp = CreateElement.Instance.GetElement(getEdges()[i].name);
+                if (temp != null) {
+                    FaDian(temp, 0);
+                }
+            }
 
         }
     }
@@ -451,7 +453,8 @@ public class LineGraph{//电路图
     }
     void FaDian(Element lastElement,float allElectry) {
         lastElement.setCurrency(allElectry);
-        lastElement.Voltage = allElectry * lastElement.Resistance;
+        if(lastElement.EleType!=ElementType.Battery)
+            lastElement.Voltage = allElectry * lastElement.Resistance;
         switch (lastElement.EleType)
         {
             case ElementType.Light:

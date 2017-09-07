@@ -21,8 +21,11 @@ public static class ResourceTool{
     public const string EXPAREA = "Area";
     public const string INFORM_TEXT = "InformText";
     public static string ROPE = "Rope";
-    public static string ROPENODE = "ROPENODE";
+    public static string ROPENODE = "RopeNode";
     public static string WANYONGBIAO = "WanYongBiao";
+    public static string DIALOGBOX = "DialogBox";
+    public static string SURE_BTN = "SureBtn";
+    public static string CANCEL_BTN = "CancelBtn";
     public static GameObject EnergyPreb;
     public static GameObject LinePreb;
     public static GameObject SwitchPreb;
@@ -48,5 +51,15 @@ public static class ResourceTool{
         temp.name = prefab.name;
         return temp;
    }
-    
+    public static void DestoryGameObject(GameObject go) {
+        if(go!=null)
+        GameObject.Destroy(go);
+    }
+    public static Vector3 WorldToUIPoint(Camera expCamera, Canvas canvas, Vector3 pos)
+    {
+        Vector3 v_v3 = expCamera.WorldToScreenPoint(pos);
+        Vector3 v_ui = canvas.worldCamera.ScreenToWorldPoint(v_v3);
+        Vector3 v_new = new Vector3(v_ui.x, v_ui.y, canvas.GetComponent<RectTransform>().anchoredPosition3D.z);
+        return v_new;
+    }
 }

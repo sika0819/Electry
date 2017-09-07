@@ -34,9 +34,10 @@ public class RopePoint : MonoBehaviour {
 	void Update () {
         Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (isLink&&!exp.startDraw) {
-            if(linkObj!=null)
-            transform.position = linkObj.transform.position;
+        if (isLink && !exp.startDraw)
+        {
+            if (linkObj != null)
+                transform.position = linkObj.transform.position;
         }
         if (isMove)
         {
@@ -47,23 +48,24 @@ public class RopePoint : MonoBehaviour {
             }
 
         }
-        if (Input.GetMouseButtonUp(0)) {
+        if (Input.GetMouseButtonUp(0))
+        {
             isMove = false;
         }
-       
-	}
+
+    }
     void OnMouseDown() {
         isMove = true;
     }
     void OnTriggerEnter(Collider coli)
     {
-        Debug.Log(coli.name);
+        //Debug.Log(coli.name);
         if (!exp.startDraw&&coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent&&(!coli.transform.parent.name.Contains(ResourceTool.ROPE)))
         {
             if (!isLink)
             {
                 linkObj = coli.gameObject;
-                Debug.Log(coli.gameObject.name);
+                //Debug.Log(coli.gameObject.name);
                 Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
                 isMove = false;
                 transform.position = coli.gameObject.transform.position;

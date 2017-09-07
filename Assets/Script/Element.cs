@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Element{//电子元器件基类
+public class Element {//电子元器件基类
     //private ElecEdge electryElement;//边节点
     //private Vertex pos;//正极点
     //private Vertex negative;//负极点
@@ -20,7 +20,7 @@ public class Element{//电子元器件基类
             return eleObj.name;
         }
     }
-    
+
     public float Currency
     {
         get
@@ -44,7 +44,7 @@ public class Element{//电子元器件基类
         {
             if (insideEdge != null)
             {
-               // Debug.Log("将"+name+"的电阻设为："+value);
+                // Debug.Log("将"+name+"的电阻设为："+value);
                 insideEdge.Resistance = value;
             }
         }
@@ -72,7 +72,7 @@ public class Element{//电子元器件基类
     public Edge LineEdge {
         get {
             return insideEdge;
-        }set {
+        } set {
             insideEdge = value;
         }
     }
@@ -80,18 +80,24 @@ public class Element{//电子元器件基类
         get {
             if (point1 == null)
                 Debug.LogError("节点为空");
-            
+
             return point1;
-        }set {
+        } set {
             if (point1 == null)
                 Debug.LogError("设置空节点");
             point1 = value;
         }
     }
+
+    public void Destory()
+    {
+
+    }
+
     public Node endPoint {
         get {
             return point2;
-        }set {
+        } set {
             point2 = value;
         }
     }
@@ -99,8 +105,8 @@ public class Element{//电子元器件基类
     {
         get
         {
-            if(startVertexObj != null)
-            return startVertexObj;
+            if (startVertexObj != null)
+                return startVertexObj;
             Debug.LogError("获取点程序错误");
             return null;
         }
@@ -108,6 +114,7 @@ public class Element{//电子元器件基类
         {
             if (value != null)
             {
+                Debug.Log(name + "起始点:" + value.name);
                 startVertexObj = value;
             }
             else {
@@ -120,8 +127,8 @@ public class Element{//电子元器件基类
     {
         get
         {
-            if(endVertexObj != null)
-            return endVertexObj;
+            if (endVertexObj != null)
+                return endVertexObj;
             Debug.LogError("获取点程序错误");
             return null;
         }
@@ -129,7 +136,8 @@ public class Element{//电子元器件基类
         {
             if (value != null)
             {
-                endVertexObj=value;
+                Debug.Log(name + "终点：" + value.name);
+                endVertexObj = value;
             }
             else {
                 Debug.LogError("获取点程序错误");
@@ -143,20 +151,22 @@ public class Element{//电子元器件基类
     }
     public void Init(Element copyEle) {
         this.eleObj = copyEle.EleObj;
-       // this.electryElement = copyEle.ElectryEdge;
+        // this.electryElement = copyEle.ElectryEdge;
         this.elementType = copyEle.EleType;
-        this.point1 =copyEle.startPoint;
-        this.point2 =copyEle.endPoint;
+        this.point1 = copyEle.startPoint;
+        this.point2 = copyEle.endPoint;
         this.insideEdge = copyEle.LineEdge;
-       // this.electryElement = copyEle.ElectryEdge;
+        // this.electryElement = copyEle.ElectryEdge;
         this.Resistance = copyEle.Resistance;
         this.Voltage = copyEle.Voltage;
+        this.startVertexObj = copyEle.StartVertexObj;
+        this.endVertexObj = copyEle.EndVertexObj;
     }
 
     public void setShader(Shader setShader)
     {
         Renderer[] shaderArray = eleObj.GetComponentsInChildren<Renderer>();
-        for (int i = 0; i<shaderArray.Length; i++)
+        for (int i = 0; i < shaderArray.Length; i++)
         {
             shaderArray[i].material.shader = setShader;
         }
@@ -178,7 +188,13 @@ public class Element{//电子元器件基类
             matList[i].shader = lastRender[i];
         }
     }
-    public void Init(GameObject obj,int i)
+
+    public void SetVisible(bool v)
+    {
+        eleObj.SetActive(v);
+    }
+
+    public void Init(GameObject obj, int i)
     {
         eleObj = ResourceTool.InstitateGameObject(obj);
         eleObj.name = obj.name + i;
@@ -191,8 +207,8 @@ public class Element{//电子元器件基类
     public void setCurrency(float current) {//设置电流
         this.current = current;
     }
-    
-   
+
+
     public void SetResistance(float value) {
         Resistance = value;
         //if (ElectryEdge != null) {
@@ -207,7 +223,7 @@ public class Element{//电子元器件基类
         elementType = initType;
         if (initType != ElementType.Line)
         {
-           
+
             point1 = new Node(GenrateIndex.Instance.Index);
             point2 = new Node(GenrateIndex.Instance.Index);
             //pos = new Vertex(point1.index);
@@ -223,7 +239,7 @@ public class Element{//电子元器件基类
             point1 = new Node();
             point2 = new Node();
         }
-        
+
         if (eleObj.transform.FindChild(ResourceTool.STARTPOINT))
         {
             startVertexObj = eleObj.transform.FindChild(ResourceTool.STARTPOINT).gameObject;
@@ -260,6 +276,12 @@ public class Element{//电子元器件基类
     public void SetPosition(Vector3 pos)
     {
         eleObj.transform.localPosition = pos;
+    }
+    public void SetStartPos(Vector3 pos) {
+        StartVertexObj.transform.position = pos;
+    }
+    public void SetEndPos(Vector3 pos) {
+        EndVertexObj.transform.position = pos;
     }
     public void SetRotation(Vector3 eulerAngle)
     {

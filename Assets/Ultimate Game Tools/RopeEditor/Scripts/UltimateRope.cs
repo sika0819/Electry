@@ -269,7 +269,7 @@ public static class RopePersistManager
                             rope.RopeNodes[nNode].segmentLinks[nLink] = GameObject.Instantiate(rope.LinkObject) as GameObject;
                             rope.RopeNodes[nNode].segmentLinks[nLink].name = ropeData.m_aLinkTransformInfo[nLinearLinkIndex].strObjectName;
                         }
-
+                        rope.RopeNodes[nNode].segmentLinks[nLink].tag = ResourceTool.ROPENODE;
                         rope.RopeNodes[nNode].segmentLinks[nLink].AddComponent<UltimateRopeLink>();
                         rope.RopeNodes[nNode].segmentLinks[nLink].transform.parent = (rope.FirstNodeIsCoil() && nNode == 0) ? rope.CoilObject.transform : rope.gameObject.transform;
 
@@ -1296,6 +1296,7 @@ public class UltimateRope : MonoBehaviour
                         node.segmentLinks[nLink].AddComponent<UltimateRopeLink>();
                         node.segmentLinks[nLink].transform.parent = CoilObject.transform;
                         node.segmentLinks[nLink].layer = RopeLayer;
+                        node.segmentLinks[nLink].tag = ResourceTool.ROPENODE;
                     }
 
                     if(CoilDiameter < 0.0f) CoilDiameter = 0.0f;
@@ -1330,7 +1331,7 @@ public class UltimateRope : MonoBehaviour
                             node.segmentLinks[nLink] = Instantiate(LinkObject) as GameObject;
                             node.segmentLinks[nLink].name = strLinkName;
                         }
-
+                        node.segmentLinks[nLink].tag = ResourceTool.ROPENODE;
                         node.segmentLinks[nLink].AddComponent<UltimateRopeLink>();
 
                         if(Vector3.Distance(goSegmentStart.transform.position, goSegmentEnd.transform.position) < 0.001f)
@@ -2095,7 +2096,7 @@ public class UltimateRope : MonoBehaviour
                                 capsule.direction = GetLinkAxisIndex();
                                 capsule.material  = RopePhysicsMaterial;
                                 capsule.enabled   = bColliderEnabled;
-
+                                capsule.isTrigger = true;
                                 break;
 
                             case EColliderType.Box:
@@ -2104,7 +2105,7 @@ public class UltimateRope : MonoBehaviour
 
                                 Vector3 v3Center = GetLinkAxisOffset(fColliderCenter);
                                 Vector3 v3Size   = Vector3.zero;
-
+                                box.isTrigger = true;
                                 box.material = RopePhysicsMaterial;
 
                                 if(GetLinkBoxColliderCenterAndSize(fLinkLength, fRopeDiameter, ref v3Center, ref v3Size))
@@ -2893,7 +2894,7 @@ public class UltimateRope : MonoBehaviour
             meshCollider.sharedMesh   = meshFilter.sharedMesh;
             meshCollider.convex       = false;
             meshCollider.material     = RopePhysicsMaterial;
-
+            meshCollider.isTrigger = true;
 #if UNITY_EDITOR
 
             // Save mesh as asset

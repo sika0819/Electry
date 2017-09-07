@@ -1,6 +1,6 @@
 ________________________________________________________________________________________
                                   Ultimate Rope Editor
-                       Copyright © 2014-2016 Ultimate Game Tools
+                       Copyright ?2014-2016 Ultimate Game Tools
                             http://www.ultimategametools.com
                                info@ultimategametools.com
 ________________________________________________________________________________________

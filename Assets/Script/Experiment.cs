@@ -28,9 +28,15 @@ public class Experiment : MonoBehaviour {
     Text informText;
     Vector3 hitPos;
     public float rotateSpeed=10;
+    bool isCreateRopeStart=false;
+    bool isCreateRopeEnd=false;
+    Canvas showCanvas;
+    GameObject DialogBox;
+    Button DialogSureBtn;
+    Button DialogCancelBtn;
+    bool showDialog = false;
     // Use this for initialization
     void Start () {
-        
         expButtonsObj = GameObject.FindGameObjectsWithTag(ResourceTool.BTNTAG);
         expButton = new Button[expButtonsObj.Length];
         for (int iLoop = 0; iLoop < expButtonsObj.Length; iLoop++)
@@ -40,13 +46,38 @@ public class Experiment : MonoBehaviour {
         }
         expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
         informText = GameObject.Find(ResourceTool.INFORM_TEXT).GetComponent<Text>();
+        DialogBox = GameObject.Find(ResourceTool.DIALOGBOX);
+        DialogSureBtn = DialogBox.transform.Find(ResourceTool.SURE_BTN).GetComponent<Button>();
+        DialogSureBtn.onClick.AddListener(OnDialogSure);
+        DialogCancelBtn = DialogBox.transform.Find(ResourceTool.CANCEL_BTN).GetComponent<Button>();
+        DialogCancelBtn.onClick.AddListener(OnDialogCancel);
+        DialogBox.SetActive(false);
         CreateElement.Instance.SetInformBox(informText);
+        showCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
 	}
+
+    private void OnDialogCancel()
+    {
+        DialogBox.SetActive(false);
+        showDialog = false;
+    }
+
+    private void OnDialogSure()
+    {
+        if (createdElement != null) {
+            ResourceTool.DestoryGameObject(createdElement.EleObj);
+            CreateElement.Instance.RemoveElement(createdElement);
+            createdElement.Destory();
+        }
+        DialogBox.SetActive(false);
+        showDialog = false;
+    }
 
     private void OnCreate(GameObject go)
     {
-        if (createdElement == null)
+        //if (createdElement == null)
         {
+            isCreateRopeStart = false;
             switch (go.name)
             {
                 case ResourceTool.ENERGYBTN:
@@ -54,6 +85,7 @@ public class Experiment : MonoBehaviour {
                     break;
                 case ResourceTool.LINEBTN:
                     CreateElement.Instance.Init(ResourceTool.LinePreb, ElementType.Line);
+                    isCreateRopeStart = true;
                     break;
                 case ResourceTool.SWICTHBTN:
                     CreateElement.Instance.Init(ResourceTool.SwitchPreb, ElementType.Switch);
@@ -101,14 +133,15 @@ public class Experiment : MonoBehaviour {
             if (hit.collider.tag == ResourceTool.GROUND)
             {
                 hitPos = hit.point;
-                if (createdElement != null)
+                
+                if (createdElement != null&&startDraw&&!isCreateRopeStart)
                 {
                     createdElement.SetPosition(hitPos);
                 }
             }
             else if (hit.collider.tag == ResourceTool.PREFAB)
             {
-                if (!startDraw && Input.GetMouseButtonDown(0) && createdElement == null)
+                if (!startDraw && Input.GetMouseButtonDown(0))
                 {
                     createdElement = CreateElement.Instance.GetElement(hit.collider.name);
 
@@ -137,14 +170,76 @@ public class Experiment : MonoBehaviour {
                     }
                     isMove = true;
                 }
+                if (!startDraw && Input.GetMouseButtonDown(1))
+                {
+                    createdElement = CreateElement.Instance.GetElement(hit.collider.name);
+                    if (createdElement != null)
+                    {
+                        matArray = new List<Material>();
+                        Renderer[] renderArray = createdElement.EleObj.GetComponentsInChildren<Renderer>();
+                        for (int i = 0; i < renderArray.Length; i++)
+                        {
+                            for (int j = 0; j < renderArray[i].materials.Length; j++)
+                            {
+                                matArray.Add(renderArray[i].materials[j]);
+                            }
+                        }
+                        defaultShader = new Shader[matArray.Count];
+                        for (int i = 0; i < matArray.Count; i++)
+                        {
+                            defaultShader[i] = matArray[i].shader;
+                        }
+                        createdElement.setShader(outlineShader);
+                        Vector3 uiPos = ResourceTool.WorldToUIPoint(expCamera, showCanvas, hitPos);
+                        //Debug.Log(uiPos);
+                        DialogBox.transform.position = uiPos;
+                        DialogBox.SetActive(true);
+                        showDialog = true;
+                    }
+
+                    //isMove = false;
+                }
             }
-            else if (hit.collider.tag == ResourceTool.ROPENODE) {
-                createdElement = CreateElement.Instance.GetElement(hit.collider.gameObject.transform.parent.parent.name);
+            else if (hit.collider.tag == ResourceTool.POINT)
+            {
+                if (!startDraw && Input.GetMouseButtonDown(1))
+                {
+                    Debug.Log(hit.collider.gameObject.transform.parent.name);
+                    createdElement = CreateElement.Instance.GetElement(hit.collider.gameObject.transform.parent.name);
+                    if (createdElement != null)
+                    {
+                        matArray = new List<Material>();
+                        Renderer[] renderArray = createdElement.EleObj.GetComponentsInChildren<Renderer>();
+                        for (int i = 0; i < renderArray.Length; i++)
+                        {
+                            for (int j = 0; j < renderArray[i].materials.Length; j++)
+                            {
+                                matArray.Add(renderArray[i].materials[j]);
+                            }
+                        }
+                        defaultShader = new Shader[matArray.Count];
+                        for (int i = 0; i < matArray.Count; i++)
+                        {
+                            defaultShader[i] = matArray[i].shader;
+                        }
+                        createdElement.setShader(outlineShader);
+                        Vector3 uiPos = ResourceTool.WorldToUIPoint(expCamera, showCanvas, hitPos);
+                        //Debug.Log(uiPos);
+                        DialogBox.transform.position = uiPos;
+                        DialogBox.SetActive(true);
+                        showDialog = true;
+                    }
+                    
+                    //isMove = false;
+                }
             }
-            if (startDraw && Input.GetMouseButtonDown(0))
+            if (startDraw && isMove && Input.GetMouseButtonDown(0))
             {
                 startDraw = false;
-                createdElement = null;
+                
+            }else if(!showDialog&& Input.GetMouseButtonDown(0))
+            {
+                DialogBox.SetActive(false);
             }
         }
        
@@ -154,15 +249,23 @@ public class Experiment : MonoBehaviour {
             {
                 createdElement.setShader(outlineShader);
                 createdElement.SetPosition(hitPos);
+                if (isCreateRopeStart)
+                {
+                    createdElement.SetStartPos(hitPos);
+                }
+                if (isCreateRopeEnd) {
+                    createdElement.SetEndPos(hitPos);
+                }
             }
         }
-        if (!startDraw&&isMove && Input.GetMouseButtonUp(0))
+        if (!startDraw && Input.GetMouseButtonUp(0))
         {
             isMove = false;
             if (createdElement != null)
             {
                 createdElement.setShader(defaultShader);
-                createdElement = null;
+                
+                //createdElement = null;
             }
         }
         if (Input.GetAxis("Mouse ScrollWheel") != 0)
