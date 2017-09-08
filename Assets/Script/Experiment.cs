@@ -28,8 +28,8 @@ public class Experiment : MonoBehaviour {
     Text informText;
     Vector3 hitPos;
     public float rotateSpeed=10;
-    bool isCreateRopeStart=false;
-    bool isCreateRopeEnd=false;
+    public bool isCreateRopeStart=false;
+    public bool isCreateRopeEnd=false;
     Canvas showCanvas;
     GameObject DialogBox;
     Button DialogSureBtn;
@@ -68,6 +68,7 @@ public class Experiment : MonoBehaviour {
             ResourceTool.DestoryGameObject(createdElement.EleObj);
             CreateElement.Instance.RemoveElement(createdElement);
             createdElement.Destory();
+            createdElement = null;
         }
         DialogBox.SetActive(false);
         showDialog = false;
@@ -141,7 +142,7 @@ public class Experiment : MonoBehaviour {
             }
             else if (hit.collider.tag == ResourceTool.PREFAB)
             {
-                if (!startDraw && Input.GetMouseButtonDown(0))
+                if (!startDraw && Input.GetMouseButtonDown(0)&&!isCreateRopeStart&&!isCreateRopeEnd)
                 {
                     createdElement = CreateElement.Instance.GetElement(hit.collider.name);
 
@@ -248,13 +249,31 @@ public class Experiment : MonoBehaviour {
             if (createdElement != null)
             {
                 createdElement.setShader(outlineShader);
-                createdElement.SetPosition(hitPos);
-                if (isCreateRopeStart)
+                if (!isCreateRopeStart)
                 {
-                    createdElement.SetStartPos(hitPos);
+                    if (createdElement.EleType != ElementType.Line)
+                        createdElement.SetPosition(hitPos);
                 }
-                if (isCreateRopeEnd) {
-                    createdElement.SetEndPos(hitPos);
+                else
+                {
+                    if (createdElement.EleType == ElementType.Line)
+                        createdElement.SetStartPos(hitPos);
+                }
+                
+            }
+        }
+        if (!startDraw&&isCreateRopeEnd)
+        {
+            if (createdElement!=null)
+            {
+                if (hit.collider.tag == ResourceTool.GROUND)
+                {
+                    if(createdElement.EleType==ElementType.Line)
+                        createdElement.SetEndPos(hitPos);
+                }
+                else if (hit.collider.tag == ResourceTool.POINT && !hit.collider.transform.parent.name.Contains(ResourceTool.ROPE)) {
+                    if (createdElement.EleType == ElementType.Line)
+                        createdElement.SetEndPos(hit.collider.gameObject.transform.position);
                 }
             }
         }
@@ -266,6 +285,44 @@ public class Experiment : MonoBehaviour {
                 createdElement.setShader(defaultShader);
                 
                 //createdElement = null;
+            }
+            if (isCreateRopeStart)
+            {
+                if (createdElement.EleType == ElementType.Line)
+                {
+                    if (hit.collider.tag == ResourceTool.POINT)
+                    {
+                        createdElement.SetStartPos(hit.collider.transform.position);
+                        Rope tempRope = CreateElement.Instance.GetRope(createdElement.name);
+                        tempRope.StartVertexObj.GetComponent<RopePoint>().SetLinkObj(hit.collider.gameObject);
+                    }
+                    isCreateRopeStart = false;
+                    isCreateRopeEnd = true;
+                }
+            }
+            else if(isCreateRopeEnd){
+                if (createdElement.EleType == ElementType.Line)
+                {
+                    if (hit.collider.gameObject.tag == ResourceTool.POINT)
+                    {
+                        Rope tempRope = CreateElement.Instance.GetRope(createdElement.name);
+                        if (tempRope != null)
+                        {
+                            //Debug.Log("连接尾点");
+                            RopePoint ropePoint = tempRope.EndVertexObj.GetComponent<RopePoint>();
+                            if (ropePoint.linkObj != null && ropePoint.linkObj != tempRope.startPoint.NodeObj)
+                            {
+                                Debug.Log("连接尾点" + ropePoint.linkObj);
+                                createdElement.SetEndPos(ropePoint.linkObj.transform.position);
+                                ropePoint.SetLinkObj(ropePoint.linkObj);
+                            }
+                            else {
+                                createdElement.SetEndPos(hit.point);
+                            }
+                        }
+                    }
+                }
+                isCreateRopeEnd = false;
             }
         }
         if (Input.GetAxis("Mouse ScrollWheel") != 0)

@@ -289,7 +289,7 @@ public class DirectGraph {//电流图
                 for (int j = 0; j < getAdj(i).Count; j++)
                 {
                     getAdj(i)[j].Electry = allElectry;
-                   // Debug.Log(getAdj(i)[j].name);
+                    Debug.Log(getAdj(i)[j]);
                     Element nowElement= CreateElement.Instance.GetElement(getAdj(i)[j].name);
                     switch (nowElement.EleType) {
                         case ElementType.Light:

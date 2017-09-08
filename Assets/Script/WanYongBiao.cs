@@ -9,6 +9,8 @@ public class WanYongBiao:Element {
                 NumberText.text = LineEdge.Voltage.ToString() + "V";
             return LineEdge.Voltage;
         }set {
+            if (LineEdge.Voltage != 0)
+                NumberText.text = LineEdge.Voltage.ToString() + "V";
             LineEdge.Voltage = value;
         }
     }
@@ -18,6 +20,8 @@ public class WanYongBiao:Element {
                 NumberText.text = LineEdge2.Electry.ToString() + "A";
             return LineEdge2.Electry;
         }set {
+            if (LineEdge2.Electry != 0)
+                NumberText.text = LineEdge2.Electry.ToString() + "A";
             LineEdge2.Electry = value;
         }
     }
@@ -87,41 +91,26 @@ public class WanYongBiao:Element {
             endElecObj = new GameObject();
             endElecObj.transform.SetParent(EleObj.transform);
         }
-        endElecObj.name = ResourceTool.STARTPOINT + ElecEndPoint.index;
+        endElecObj.name = ResourceTool.ENDPOINT + ElecEndPoint.index;
         ElecStartPoint.InitGameObj(startElecObj);
         ElecEndPoint.InitGameObj(endElecObj);
         LineEdge2 = new Edge(ElecStartPoint,ElecEndPoint);
         LineEdge2.name = name;
         LineEdge.Resistance = 10000000f;
-        LineEdge2.Resistance = 0;
+        LineEdge2.Resistance = 0f;
         
         NumberText = EleObj.GetComponentInChildren<TextMesh>();
         WanVoltage = 0;
         WanCurrent = 0;
         NumberText.text = "0";
     }
-    public void LinkVoltage(Edge e) {
-        LineEdge = e;
-        WanVoltage = e.Voltage;
-    }
-    public void LinkElectry(Edge e) {
-        LineEdge2 = e;
-        WanCurrent = e.Electry;
+    public void setCurrent(float current)
+    {//设置电流
+        WanCurrent = current;
     }
     public override void Electry()
     {
-        Debug.Log("读取电压：" + WanVoltage);
-        Debug.Log("读取电流" + WanCurrent);
-        if (WanVoltage != 0)
-        {
-
-        }
-        else if (WanCurrent != 0)
-        {
-
-        }
-        else
-        {
+        if (WanVoltage == 0 && WanCurrent == 0) {
             NumberText.text = "0";
         }
     }

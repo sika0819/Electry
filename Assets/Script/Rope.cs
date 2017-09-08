@@ -17,7 +17,6 @@ public class Rope : Element {
 
     }
     public Rope(Element e) {
-
         this.Init(e);
     }
     public void InitRope() {

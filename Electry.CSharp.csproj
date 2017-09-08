@@ -73,8 +73,27 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
+    <Reference Include="EasyAR.Unity">
+      <HintPath>Assets\EasyAR\Scripts\EasyAR.Unity.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\EasyAR\Scripts\ARBuilder.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ARCameraBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ARSceneBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ARSceneTrackerBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\CameraDeviceBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\CloudRecognizerBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\EasyARBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ImageTargetBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ImageTrackerBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ObjectTargetBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\ObjectTrackerBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\QRCodeScannerBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\RealityPlaneBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\RecorderBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\RenderCameraBehaviour.cs" />
+    <Compile Include="Assets\EasyAR\Scripts\VideoPlayerBehaviour.cs" />
     <Compile Include="Assets\Script\Battery.cs" />
     <Compile Include="Assets\Script\CreateElement.cs" />
     <Compile Include="Assets\Script\DirectGraph.cs" />
@@ -109,12 +128,20 @@
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Scripts\UltimateRopeLink.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\EasyAR\Resources\Shaders\RealityPlane.shader" />
+    <None Include="Assets\EasyAR\Resources\Shaders\TransparentVideo.shader" />
+    <None Include="Assets\EasyAR\doc\changelog.cn.txt" />
+    <None Include="Assets\EasyAR\doc\changelog.en.txt" />
+    <None Include="Assets\EasyAR\doc\readme.cn.txt" />
+    <None Include="Assets\EasyAR\doc\readme.en.txt" />
     <None Include="Assets\Material\Glass.shader" />
     <None Include="Assets\Material\Standard.shader" />
     <None Include="Assets\Material\outline.shader" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_en.txt" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_ja.txt" />
+    <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
     <None Include="Assets\Ultimate Game Tools\RopeEditor\1st readme - v1.21.txt" />
+    <None Include="Assets\What to import!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

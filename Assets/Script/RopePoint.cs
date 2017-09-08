@@ -34,12 +34,12 @@ public class RopePoint : MonoBehaviour {
 	void Update () {
         Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (isLink && !exp.startDraw)
+        if (isLink)
         {
             if (linkObj != null)
                 transform.position = linkObj.transform.position;
         }
-        if (isMove)
+        if (!isLink&&isMove)
         {
             if (Physics.Raycast(ray, out hit))
             {
@@ -52,40 +52,51 @@ public class RopePoint : MonoBehaviour {
         {
             isMove = false;
         }
-
+        if (linkObj == null) {
+            isLink = false;
+        }
     }
     void OnMouseDown() {
         isMove = true;
     }
     void OnTriggerEnter(Collider coli)
     {
-        //Debug.Log(coli.name);
-        if (!exp.startDraw&&coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent&&(!coli.transform.parent.name.Contains(ResourceTool.ROPE)))
+        if (coli.tag == ResourceTool.POINT && coli.gameObject.transform.parent != transform.parent && (!coli.transform.parent.name.Contains(ResourceTool.ROPE)))
         {
             if (!isLink)
             {
                 linkObj = coli.gameObject;
-                //Debug.Log(coli.gameObject.name);
-                Node linkPoint= CreateElement.Instance.GetPoint(linkObj.name);
-                isMove = false;
-                transform.position = coli.gameObject.transform.position;
-
-                isLink = true;
-                linkedPoint = linkPoint;
-
-                if (name == ResourceTool.STARTPOINT) {
-                    rope.startPoint = linkedPoint;
-                    rope.LinkObj1 = linkObj;
-                }
-                if (name == ResourceTool.ENDPOINT) {
-                    rope.endPoint = linkedPoint;
-                    rope.LinkObj2 = linkObj;
-                }
-                if (rope.CanLink)
+                Debug.Log(linkObj);
+                if (isMove)
                 {
-                    rope.Link(rope.startPoint, rope.endPoint);
+                    SetLinkObj(coli.gameObject);
                 }
             }
+        }
+    }
+    public void SetLinkObj(GameObject LinkObj) {
+        if (!isLink&&LinkObj.transform.parent != transform.parent && (!LinkObj.transform.parent.name.Contains(ResourceTool.ROPE))){
+            Node linkPoint = CreateElement.Instance.GetPoint(LinkObj.name);
+            linkObj = LinkObj;
+            transform.position = LinkObj.transform.position;
+            isMove = false;
+            linkedPoint = linkPoint;
+
+            if (name == ResourceTool.STARTPOINT)
+            {
+                rope.startPoint = linkedPoint;
+                rope.LinkObj1 = LinkObj;
+            }
+            if (name == ResourceTool.ENDPOINT)
+            {
+                rope.endPoint = linkedPoint;
+                rope.LinkObj2 = LinkObj;
+            }
+            if (rope.CanLink)
+            {
+                rope.Link(rope.startPoint, rope.endPoint);
+            }
+            isLink = true;
         }
     }
 }

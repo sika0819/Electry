@@ -118,6 +118,12 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
+    <Reference Include="EasyAR.Unity.Editor">
+      <HintPath>Assets\EasyAR\Scripts\Editor\EasyAR.Unity.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="EasyAR.Unity">
+      <HintPath>Assets\EasyAR\Scripts\EasyAR.Unity.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Electry.CSharp.csproj">
@@ -126,16 +132,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\EasyAR\Scripts\Editor\PostBuild.cs" />
     <Compile Include="Assets\PanoramaToCubemap\Editor\PanoramaToCubemap.cs" />
     <Compile Include="Assets\Ultimate Game Tools\RopeEditor\Editor\UltimateRopeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\EasyAR\Resources\Shaders\RealityPlane.shader" />
+    <None Include="Assets\EasyAR\Resources\Shaders\TransparentVideo.shader" />
+    <None Include="Assets\EasyAR\doc\changelog.cn.txt" />
+    <None Include="Assets\EasyAR\doc\changelog.en.txt" />
+    <None Include="Assets\EasyAR\doc\readme.cn.txt" />
+    <None Include="Assets\EasyAR\doc\readme.en.txt" />
     <None Include="Assets\Material\Glass.shader" />
     <None Include="Assets\Material\Standard.shader" />
     <None Include="Assets\Material\outline.shader" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_en.txt" />
     <None Include="Assets\PanoramaToCubemap\Documents\PanoramaToCubemap_ja.txt" />
+    <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
     <None Include="Assets\Ultimate Game Tools\RopeEditor\1st readme - v1.21.txt" />
+    <None Include="Assets\What to import!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

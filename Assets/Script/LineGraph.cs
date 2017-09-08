@@ -129,6 +129,16 @@ public class LineGraph{//电路图
         Debug.LogError("没有找到边！");
         return null;
     }
+    public bool EleHasEdge(Edge e) {
+        for (int i = 0; i < halfEdgeList.Count;i++) {
+            for (int j = 0; j < halfEdgeList[i].Count; j++)
+            {
+                if (halfEdgeList[i][j].isEqual(e))
+                    return true;
+            }
+        }
+        return false;
+    }
     public List<Edge> getEdges()
     {//返回所有便的集合
         List<Edge> edges = new List<Edge>();
@@ -221,7 +231,7 @@ public class LineGraph{//电路图
         }
         
         generateHalf();
-        Debug.Log(outHalfCircle());
+        //Debug.Log(outHalfCircle());
     }
     void generateHalf() {
         halfList = circlelist;
@@ -433,7 +443,7 @@ public class LineGraph{//电路图
         if (allResistance != 0)
         {
             float allElectry = allVoltage / allResistance;
-            Debug.Log("电阻：" + allResistance + " 电压:" + allVoltage + " 电流:" + allElectry);
+            //Debug.Log("电阻：" + allResistance + " 电压:" + allVoltage + " 电流:" + allElectry);
             for (int i = 0; i < circlelist[0].Count - 1; i++)
             {
                 Edge nowEdge = GetEdge(circlelist[0][i].index, circlelist[0][i + 1].index);
@@ -451,16 +461,37 @@ public class LineGraph{//电路图
             CreateElement.Instance.ShowInform = "线路短路！请检查！";
         }
     }
-    void FaDian(Element lastElement,float allElectry) {
+    void FaDian(Element lastElement,float allElectry,float binglianResistance=0) {
         lastElement.setCurrency(allElectry);
-        if(lastElement.EleType!=ElementType.Battery)
-            lastElement.Voltage = allElectry * lastElement.Resistance;
+        if (lastElement.EleType != ElementType.Battery)
+        {
+            //Debug.Log(binglianResistance);
+            //Debug.Log(allElectry);
+            if (binglianResistance != 0)
+            {
+                if (EleHasEdge(lastElement.LineEdge))
+                {
+                    lastElement.Voltage = allElectry * binglianResistance;
+                }
+            }
+            else {
+                if (EleHasEdge(lastElement.LineEdge))
+                {
+                    lastElement.Voltage = allElectry * lastElement.Resistance;
+                }
+            }
+        }
         switch (lastElement.EleType)
         {
             case ElementType.Light:
-                ElecLight light = CreateElement.Instance.GetEleLight(lastElement.LineEdge.name);
+                ElecLight light = CreateElement.Instance.GetEleLight(lastElement.name);
                 light.setCurrency(allElectry);
                 light.Electry();
+                break;
+            case ElementType.Voltmeter:
+                WanYongBiao biao= CreateElement.Instance.GetVoltmeter(lastElement.name);
+                biao.setCurrent(allElectry);
+                biao.Electry();
                 break;
             default:
                 lastElement.Electry();
@@ -515,7 +546,8 @@ public class LineGraph{//电路图
                 if (item.Key.PairKey == i || item.Key.PairValue == i)
                     repeapList = item.Value;
             }
-            List<Edge> copyList =halfEdgeList[i];
+            List<Edge> copyList =new List<Edge>();
+            copyList = halfEdgeList[i];
             List<Edge> myList = new List<Edge>();
             for (int rep = 0; rep < repeapList.Count; rep++)
             {
@@ -583,7 +615,7 @@ public class LineGraph{//电路图
         if (down1 != 0)
         {
             allReless = up1 / down1;
-            //Debug.Log("上" + up1 + "下" + down1 + "并联总电阻：" + allReless);
+            Debug.Log("上" + up1 + "下" + down1 + "并联总电阻：" + allReless);
         }
         else {
             CreateElement.Instance.ShowInform = "线路短路！请检查！";
@@ -613,18 +645,18 @@ public class LineGraph{//电路图
                     nowEle.setCurrency(allElectry);
                     if (nowEle.EleType!=ElementType.Battery)
                     {
-                        nowEle.Voltage = nowEle.Resistance * allElectry;
-                        nowEle.setCurrency(allElectry);
+                        if (EleHasEdge(nowEle.LineEdge))
+                        {
+                            nowEle.LineEdge.Voltage = nowEle.Resistance * allElectry;
+                        }
+                        nowEle.LineEdge.Electry=allElectry;
                         //Debug.Log("当前元器件的电压为："+nowEle.Voltage);
-                        allReaptVoltage += nowEle.Voltage;
-                        FaDian(nowEle, allElectry);
+                        allReaptVoltage += e.Voltage;
+                        FaDian(nowEle, allElectry,allRepeatRes);
                     }
                 }
             }
         }
-        //Debug.Log("串联总电压："+allReaptVoltage);
-        //Debug.Log("总电流"+allElectry);
-       // Debug.Log("总电压："+ allVoltage);
         for (int i = 0; i < relessList.Count; i++)
         {
             for (int j = 0; j < relessList[i].Count; j++)
@@ -632,14 +664,16 @@ public class LineGraph{//电路图
                 Node v = relessList[i][j].either();
                 Node w = relessList[i][j].other(v);
                 Edge e = GetEdge(v.index,w.index);
-                Debug.Log(e.name);
                 Element nowEle = CreateElement.Instance.GetElement(e.name);
                 if (nowEle != null&& nowEle.EleType != ElementType.Battery) {
-                    nowEle.Voltage=allVoltage - allReaptVoltage;
+                    if (EleHasEdge(nowEle.LineEdge))
+                    {
+                        nowEle.LineEdge.Voltage = allVoltage - allReaptVoltage;
+                    }
                     //Debug.Log("当前电阻："+ nowEle.Resistance);
                     float current = nowEle.Voltage/allReless;
-                    nowEle.setCurrency(current);
-                    FaDian(nowEle, current);
+                    e.Electry=current;
+                    FaDian(nowEle, current, allReless);
                     //Debug.Log("当前电流：" + nowEle.Currency);
                 }
             }

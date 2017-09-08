@@ -61,7 +61,7 @@ public class Edge{//电子元器件相当于加权边，有两个节点
     }
     public bool isEqual(Edge e) {
         bool equal = false;
-        if (e.either().index==v.index&&e.other(v).index==w.index)
+        if ((e.either().index==v.index&&e.other(v).index==w.index)|| (e.either().index == w.index && e.other(w).index == v.index))
         {
             equal = true;
         }
