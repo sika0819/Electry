@@ -32,7 +32,9 @@ public static class ResourceTool{
     public static GameObject LightPreb;
     public static GameObject ResistancePreb;
     public static GameObject WanYongBiaoPreb;
-
+    #region AR场景的字符串
+    public static string IMAGE_TARGET = "ImageTarget";
+    #endregion
     public static void InitResources() {
         EnergyPreb = Resources.Load<GameObject>("Prefab/Battery");
         LinePreb = Resources.Load<GameObject>("Prefab/Rope");

@@ -1,0 +1,29 @@
+{
+  "images" :
+  [
+    {
+      "image" : "wanyongbiao.jpg",
+      "name" : "wanYongBiaoBtn"
+    },
+    {
+      "image": "resistance.jpg",
+      "name": "resistanceBtn"
+    },
+    {
+      "image": "battery.jpg",
+      "name": "energyBtn"
+    },
+    {
+      "image": "rope.jpg",
+      "name": "lineBtn"
+    },
+    {
+      "image": "switch.jpg",
+      "name": "switchBtn"
+    },
+    {
+       "image": "light.jpg",
+      "name": "lightBtn"
+    }
+  ]
+}

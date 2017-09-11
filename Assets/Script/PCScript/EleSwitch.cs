@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EleSwitch : Element {
     Animator switchAnim;
-    bool isTurnOn=false;
+    public bool isTurnOn=false;
 
     public EleSwitch(Element ele)
     {
@@ -19,14 +19,5 @@ public class EleSwitch : Element {
         isTurnOn = !isTurnOn;
         switchAnim.SetBool("isOn",isTurnOn);
     }
-    public void isTurn() {
-        //当开关为开时，遍历，如果和电池联通，则电流等于电池的电流。关的时候电流等于0
-        if (isTurnOn)
-        {
 
-        }
-        else {
-            setCurrency(0);
-        }
-    }
 }
