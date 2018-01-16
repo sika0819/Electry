@@ -199,6 +199,7 @@ public class Element {//电子元器件基类
         eleObj = ResourceTool.InstitateGameObject(obj);
         eleObj.name = obj.name + i;
         eleObj.transform.SetParent(consoleArea.transform);
+        Debug.Log("创建成功");
     }
 
     public virtual void Electry() {

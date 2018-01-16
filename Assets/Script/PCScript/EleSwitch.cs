@@ -18,6 +18,7 @@ public class EleSwitch : Element {
     public void ToggleTurn() {//点击的时候切换
         isTurnOn = !isTurnOn;
         switchAnim.SetBool("isOn",isTurnOn);
+        CreateElement.Instance.ChanceSwitch(this, isTurnOn);
     }
 
 }

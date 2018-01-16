@@ -23,6 +23,12 @@ public class LineGraph{//电路图
         halfList = new List<List<Node>>();
         halfEdgeList = new List<List<Edge>>();
     }
+
+    public void ChangeSwitch(Element eleSwitch, bool isTurnOn)
+    {
+        
+    }
+
     public int VertexCount
     {//顶点数量
         get {
@@ -137,6 +143,10 @@ public class LineGraph{//电路图
                     return true;
             }
         }
+        return false;
+    }
+    bool circleHasEdge(List<Edge> edgeList, Edge e)
+    {
         return false;
     }
     public List<Edge> getEdges()

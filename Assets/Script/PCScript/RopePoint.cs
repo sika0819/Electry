@@ -8,7 +8,7 @@ public class RopePoint : MonoBehaviour {
     Camera expCamera;
     Node linkedPoint;
     Rope rope;
-    Experiment exp;
+    //Experiment exp;
     public GameObject linkObj {
         get {
             return _linkObj;
@@ -25,35 +25,47 @@ public class RopePoint : MonoBehaviour {
     // Use this for initialization
     void Start () {
         ropeController = transform.parent.GetComponentInChildren<UltimateRope>();
-        expCamera = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA).GetComponent<Camera>();
+        GameObject cameraObj = GameObject.FindGameObjectWithTag(ResourceTool.EXPCAMERA);
+        if (cameraObj != null)
+        {
+            expCamera=cameraObj.GetComponent<Camera>();
+        }
         rope = CreateElement.Instance.GetRope(transform.parent.name);
-        exp = GameObject.Find(ResourceTool.EXPERIMENT).GetComponent<Experiment>();
+        //GameObject expObj = GameObject.Find(ResourceTool.EXPERIMENT);
+        //if (expObj != null) {
+        //    exp = expObj.GetComponent<Experiment>();
+        //}
     }
 	
 	// Update is called once per frame
 	void Update () {
-        Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (isLink)
+        ropeController.Regenerate(false);
+        if (expCamera != null)
         {
-            if (linkObj != null)
-                transform.position = linkObj.transform.position;
-        }
-        if (!isLink&&isMove)
-        {
-            if (Physics.Raycast(ray, out hit))
+            Ray ray = expCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (isLink)
             {
-                transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-                ropeController.Regenerate(false);
+                if (linkObj != null)
+                    transform.position = linkObj.transform.position;
             }
+            if (!isLink && isMove)
+            {
+                if (Physics.Raycast(ray, out hit))
+                {
+                    transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+                   
+                }
 
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            isMove = false;
-        }
-        if (linkObj == null) {
-            isLink = false;
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                isMove = false;
+            }
+            if (linkObj == null)
+            {
+                isLink = false;
+            }
         }
     }
     void OnMouseDown() {

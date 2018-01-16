@@ -26,6 +26,7 @@ public static class ResourceTool{
     public static string DIALOGBOX = "DialogBox";
     public static string SURE_BTN = "SureBtn";
     public static string CANCEL_BTN = "CancelBtn";
+    public static string PROGRESS= "ProgressBar";
     public static GameObject EnergyPreb;
     public static GameObject LinePreb;
     public static GameObject SwitchPreb;
@@ -44,7 +45,7 @@ public static class ResourceTool{
         WanYongBiaoPreb = Resources.Load<GameObject>("Prefab/WanYongBiao");
     }
     public static GameObject InstitateGameObject(GameObject prefab) {
-        //Debug.Log(prefab.name);
+        Debug.Log(prefab.name);
         GameObject temp;
         temp= GameObject.Instantiate<GameObject>(prefab);
         temp.transform.localPosition = Vector3.zero;

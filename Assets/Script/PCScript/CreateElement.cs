@@ -20,6 +20,12 @@ public class CreateElement {
     Dictionary<string, Element> resistanceList;
     Dictionary<string, ElecLight> lightList;
     Dictionary<string, EleSwitch> swicthList;
+
+    public void ChanceSwitch(Element eleSwitch, bool isTurnOn)
+    {
+        lineGraph.ChangeSwitch(eleSwitch,isTurnOn);
+    }
+
     Dictionary<string, Rope> ropeList;
     Dictionary<string, WanYongBiao> voltmeterList;
     static int createIndex=0;

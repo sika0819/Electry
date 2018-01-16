@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class EasyTargetBehavior : ImageTargetBehaviour
 {
-    string targetName="";
+    private GameObject ExperimentArea;
+    private string targetName="";
+    private GameObject createObj;
     protected override void Awake()
     {
         base.Awake();
@@ -13,31 +15,65 @@ public class EasyTargetBehavior : ImageTargetBehaviour
         TargetLost += OnTargetLost;
         TargetLoad += OnTargetLoad;
         TargetUnload += OnTargetUnload;
-        
+        ExperimentArea = GameObject.Find(ResourceTool.EXPERIMENT + ResourceTool.EXPAREA);
+        ResourceTool.InitResources();
     }
-
+    protected override void Update()
+    {
+        if (createObj != null) {
+            createObj.transform.position = transform.position;
+            if (!createObj.name.Contains(ResourceTool.WANYONGBIAO))
+            {
+                createObj.transform.rotation = transform.rotation;
+            }
+            else {
+                createObj.transform.rotation = Quaternion.Euler(90+transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
+            }
+        }
+    }
     void OnTargetFound(TargetAbstractBehaviour behaviour)
     {
         targetName= Target.Name.Replace(ResourceTool.IMAGE_TARGET, "");
-        switch (targetName) {
-            case ResourceTool.LINEBTN:
-                
-                break;
+        if (createObj == null)
+        {
+            switch (targetName)
+            {
+                case ResourceTool.ENERGYBTN:
+                    createObj = ResourceTool.InstitateGameObject(ResourceTool.EnergyPreb);
+                    break;
+                case ResourceTool.LINEBTN:
+                    createObj = ResourceTool.InstitateGameObject(ResourceTool.LinePreb);
+                    break;
+                case ResourceTool.SWICTHBTN:
+                    createObj = ResourceTool.InstitateGameObject(ResourceTool.SwitchPreb);
+                    break;
+                case ResourceTool.RESISTANCEBTN:
+                    createObj = ResourceTool.InstitateGameObject(ResourceTool.ResistancePreb);
+                    break;
+                case ResourceTool.LIGHTBTN:
+                    createObj = ResourceTool.InstitateGameObject(ResourceTool.LightPreb);
+                    break;
+                case ResourceTool.VOLTMETERBTN:
+                    createObj = ResourceTool.InstitateGameObject(ResourceTool.WanYongBiaoPreb);
+                    break;
+            }
         }
+        createObj.transform.localScale = transform.localScale;
     }
 
     void OnTargetLost(TargetAbstractBehaviour behaviour)
     {
-        Debug.Log("Target Lost: " + Target.Id + " (" + Target.Name + ") ");
+        if (createObj != null) {
+            ResourceTool.DestoryGameObject(createObj);
+        }
     }
 
     void OnTargetLoad(ImageTargetBaseBehaviour behaviour, ImageTrackerBaseBehaviour tracker, bool status)
     {
-        Debug.Log("Load target (" + status + "): " + Target.Id + " (" + Target.Name + ") " + " -> " + tracker);
+
     }
 
     void OnTargetUnload(ImageTargetBaseBehaviour behaviour, ImageTrackerBaseBehaviour tracker, bool status)
     {
-        Debug.Log("Unload target (" + status + "): " + Target.Id + " (" + Target.Name + ") " + " -> " + tracker);
     }
 }
